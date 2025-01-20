@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+.navbar * {
+    font-family: 'poppins', sans-serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 20px;
+    background-color: #1f1f1f;
+    color: white;
+}
+
+.navbar .links a,
+.navbar .logout a{
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: normal;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    padding: 10px;
+}
+
+.navbar .logout a {
+    background: linear-gradient(to left, #0025e3, #001680);
+}
+
+.navbar .links,
+.navbar .logout {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .links li {
+    display: inline;
+}
+
+.navbar .links a:hover, .navbar .links .active {
+    background-color: #505050;
+}
+
+/* Responsive menu icon */
+.menu-icon {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.menu-icon .bar {
+    width: 30px;
+    height: 4px;
+    background-color: white;
+    margin: 5px 0;
+}
+
+/* Media query for mobile responsiveness */
+@media screen and (max-width: 768px) {
+    .navbar .links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 10px;
+        gap: 10px;
+        padding: 10px 0;
+        background-color: #505050;
+        border-radius: 5px;
+    }
+
+    .navbar .links.active {
+        display: flex;
+    }
+
+    .navbar .links a:hover {
+        background-color: transparent;
+        text-decoration: underline;
+    }
+
+    .navbar .links .active {
+        background-color: transparent;
+    }
+
+    .navbar .links a {
+        padding: 0 15px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .menu-icon {
+        display: flex;
+    }
+}

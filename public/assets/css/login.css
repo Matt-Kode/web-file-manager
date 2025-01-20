@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+.login-container * {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body styles */
+body {
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Login container */
+.login-container {
+    background-color: #1f1f1f;
+    padding: 20px;
+    height: fit-content;
+    border-radius: 10px;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+/* Login form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    /*font-family: 'Poppins', sans-serif;*/
+    text-align: center;
+    color: white;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+/* Input groups */
+.input-group {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+    /*font-family: 'Poppins', sans-serif;*/
+    width: 100%;
+    background-color: #1f1f1f;
+    padding: 10px 0;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #505050;
+    color: #505050;
+    outline: none;
+}
+
+label {
+    /*font-family: 'Poppins', sans-serif;*/
+    color: #505050;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #0025e3;
+}
+
+/* Submit button */
+.submit-btn {
+    /*font-family: 'Poppins', sans-serif;*/
+    background: linear-gradient(to left, #0025e3, #001680);
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #3f4b87;
+}
+
+.errors {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: fixed;
+    margin-right: auto;
+    margin-left: auto;
+    top: 10px;
+}
+
+.error-box {
+    display: flex;
+    justify-content: center;
+    width: 400px;
+    background-color: #505050;
+    border-radius: 10px;
+    padding: 10px 10px;
+    animation: error 10s ease-in;
+    opacity: 0;
+}
+
+.error-box p {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+}
+
+.error-box img {
+    display: inline-block;
+    width: 20px;
+}
+
+@keyframes error {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 100;
+    }
+    90% {
+        opacity: 100;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+

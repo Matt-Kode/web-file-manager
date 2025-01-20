@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+.files-container {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 40px;
+    width: 900px;
+    display: flex;
+    flex-direction: column;
+}
+
+table *, .options * {
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+}
+
+table {
+    border-collapse: inherit;
+    border-spacing: 0;
+    background-color: #1f1f1f;
+    border-radius: 10px;
+}
+
+table thead th {
+    color: white;
+    text-align: left;
+    padding: 20px;
+}
+
+table tbody tr {
+    color: white;
+    padding-top: 20px;
+    border-radius: 10px;
+}
+
+table tbody td {
+    padding: 20px 0;
+}
+
+table tbody td button img {
+    width: 20px;
+    height: 20px;
+}
+
+table tbody td button {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+table tbody td img{
+    width: 15px;
+}
+
+table tbody td:first-child {
+    padding-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+table tbody td:first-child p:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+table tbody td:last-child {
+    padding-right: 20px;
+    display: flex;
+    justify-content: right;
+}
+
+table tbody tr:hover {
+    background-color: #505050;
+}
+
+.editor-container {
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+#editor {
+    height: 600px;
+    width: 100%;
+    font-family: "Roboto Mono", "Courier New";
+    font-size: 14pt;
+}
+
+.options {
+    display: flex;
+    align-items: center;
+    width:100%;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.file-path button {
+    padding: 10px 5px;
+    color: white;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+.file-path button:hover {
+    text-decoration: underline;
+}
+
+.file-path span {
+    color: white;
+    font-size: 15px;
+}
+
+.save-btn {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    float: right;
+    outline: none;
+    border: none;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    background-color: #3956ff;
+}
+
+.empty-dir {
+    padding: 20px;
+}
+
+.empty-dir p {
+    color: white;
+    text-align: center;
+    font-size: 20px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.actions button {
+    border-radius: 5px;
+    background-color: #3956ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background-color: #2243f8;
+}
+
+.create-btn {
+    display: inline-flex;
+    align-items: center;
+}
+
+.create-btn img {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    transition: 0.2s ease-in;
+}
+
+.create-options {
+    overflow: hidden;
+    border-radius: 5px;
+    margin-top: 5px;
+    display: none;
+    position: absolute;
+    background-color: transparent;
+    width: 100%;
+    z-index: 1;
+}
+
+.create-options button {
+    border-radius: 0;
+}
+
+.create-options button {
+    width: 100%;
+    text-align: left;
+    padding: 10px 20px;
+    display: block;
+}
+
+.dropdown.show .create-options {
+    display: block;
+}
+
+.dropdown.show .create-btn img {
+    transform: rotate(180deg);
+}
+
