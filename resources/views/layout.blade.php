@@ -17,12 +17,11 @@
 @include('navbar')
 @yield('content')
 </body>
-@stack('scripts')
 <script>
     const modalbg = document.querySelector(".modal-bg");
     const modal = document.querySelector(".modal");
     const body = document.querySelector("body");
-    let notification_count = 0;
+    let notificationcount = 0;
 
     function openModal(content) {
         modal.innerHTML = content;
@@ -37,20 +36,22 @@
     }
 
     function displayNotification(notification, type) {
-        let notification_number = notification_count;
-        notification_count++;
+        let notificationid = notificationcount;
+        notificationcount++;
         if (type === 'error') {
-            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="background-color: #ff5046" id="${notification_number}"><p><img src="/assets/icons/error.svg">&nbsp;&nbsp;${notification}</p></div>`);
+            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="background-color: #ff5046" id="notification_${notificationid}"><p><img src="/assets/icons/error.svg">&nbsp;&nbsp;${notification}</p></div>`);
             setTimeout(function () {
-                document.getElementById(notification_number).remove()
+                document.getElementById("notification_" + notificationid).remove()
             }, 10000);
         }
         if (type === 'success') {
-            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="background-color: #5bc25b" id="${notification_number}"><p><img src="/assets/icons/success.svg">&nbsp;&nbsp;${notification}</p></div>`);
+            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="background-color: #5bc25b" id="notification_${notificationid}"><p><img src="/assets/icons/success.svg">&nbsp;&nbsp;${notification}</p></div>`);
             setTimeout(function () {
-                document.getElementById(notification_number).remove()
+                document.getElementById("notification_" + notificationid).remove()
             }, 10000);
         }
+
     }
 </script>
+@stack('scripts')
 </html>

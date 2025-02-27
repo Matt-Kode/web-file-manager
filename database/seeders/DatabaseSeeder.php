@@ -16,8 +16,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'username' => 'darius',
             'password' => Hash::make('password'),
-            'permission' => 0,
-            'api_key' => generateApiKey()
+            'permission' => 0
         ]);
     }
 }

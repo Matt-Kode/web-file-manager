@@ -19,7 +19,7 @@ class AuthUserApi
         if (Auth::check()) {
             return $next($request);
         } else {
-            return response()->json(['type'=>'error','content'=>'Session has expired']);
+            return response()->json(['type'=>'error','content'=>'Session has expired. Refresh and try again.']);
         }
     }
 }

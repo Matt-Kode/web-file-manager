@@ -3,12 +3,22 @@
     <link href="/assets/css/files.css" rel="stylesheet">
 @endpush
 @push('scripts')
-    <script src="/assets/js/files.js"></script>
+    <script src="/assets/js/files-functions.js"></script>
+    <script src="/assets/js/files-api.js"></script>
     <script src="/assets/js/files-events.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript"></script>
 @endpush
 @section('title', 'Files')
 @section('content')
+    <input type="file" class="file-input" multiple style="display: none;">
+    <input type="file" class="folder-input" webkitdirectory multiple style="display: none;">
+    <div class="uploads-container"><h1>Uploading</h1><p></p><div class="progress-bar-container"><div class="progress-bar"></div></div></div>
+    <div class="context-menu" data-filepath="">
+        <button onclick="openRenameModal(this.parentElement.getAttribute('data-filepath'))">Rename</button>
+        <button onclick="openDeleteModal(this.parentElement.getAttribute('data-filepath'))">Delete</button>
+        <button onclick="initDownload(this.parentElement.getAttribute('data-filepath'))">Download</button>
+        <button>Copy</button>
+    </div>
     <div class="files-container">
         <div class="options">
             <div class="file-path"></div>

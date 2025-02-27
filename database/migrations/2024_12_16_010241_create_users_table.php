@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->integer('permission');
-            $table->string('api_key');
         });
     }
 

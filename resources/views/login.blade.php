@@ -13,13 +13,11 @@
     <form class="login-form">
         <h1>Login</h1>
         <div class="input-group">
-            <label for="username">USERNAME</label>
-            <input type="text" id="username" name="username">
+            <input type="text" id="username" name="username" placeholder="Username">
         </div>
 
         <div class="input-group">
-            <label for="password">PASSWORD</label>
-            <input type="password" id="password" name="password">
+            <input type="password" id="password" name="password" placeholder="Password">
         </div>
 
         <button type="submit" class="submit-btn">Login</button>

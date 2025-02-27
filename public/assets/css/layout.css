@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -6,6 +7,7 @@
 
 body {
     background-color: #121212;
+    padding-bottom: 150px;
 }
 
 .notifications {
@@ -16,6 +18,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     top: 10px;
+    z-index: 102;
 }
 
 .notification-box {
@@ -42,23 +45,108 @@ body {
 
 .modal-bg {
     display: none;
-    position: absolute;
+    position: fixed;
     right: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.66);
+    backdrop-filter: blur(10px);
+    z-index: 99;
+}
+
+.modal {
+    position: fixed;
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #1f1f1f;
+    filter: none;
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+    padding: 30px;
+    z-index: 100;
+}
+
+.modal form {
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+
+.modal * {
+    font-family: Poppins;
+    font-size: 14px;
+}
+
+.modal h1 {
+    color: white;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.modal p {
+    color: #505050;
+}
+
+.modal input {
+    background-color: transparent;
+    border: none;
+    box-shadow: inset 0 0 0 1px #505050;
+    outline: none;
+    border-radius: 5px;
+    width: 400px;
+    padding: 10px;
+    color: #fff;
+}
+
+.modal input:focus {
+    box-shadow: inset 0 0 0 2px #3956ff;
+}
+
+.modal .buttons {
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+}
+
+.modal .submit-btn {
+    border-radius: 5px;
+    color: #fff;
+    background-color: #3956ff;
+    border: none;
+    padding: 10px 20px;
+}
+
+.modal .cancel-btn {
+    border-radius: 5px;
+    color: #fff;
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px #3956ff;
+    border: none;
+    padding: 10px 20px;
+}
+
+.modal .submit-btn:hover,
+.modal .cancel-btn:hover {
+    background-color: #2243f8;
+    box-shadow: none;
+}
+
+.modal *{
+    display: block;
 }
 
 .btn-loader {
     display: none;
-    border: 3px solid #fff; /* Light grey */
-    border-top: 3px solid #505050; /* Blue */
+    border: 3px solid #fff;
+    border-top: 3px solid #505050;
     border-radius: 50%;
     width: 16px;
     height: 16px;
     animation: spin 2s linear infinite;
-
 }
 
 @keyframes spin {
