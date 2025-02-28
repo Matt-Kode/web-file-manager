@@ -30,7 +30,6 @@ table thead th {
 
 table tbody tr {
     color: white;
-    padding-top: 20px;
     border-radius: 10px;
 }
 
@@ -38,43 +37,70 @@ table tbody td {
     padding: 20px 0;
 }
 
-table tbody td button img {
-    width: 80%;
-    height: 80%;
+table tbody tr .checkbox {
+    width: 7%;
+}
+table tbody tr .name {
+    width: 53%;
+    cursor: pointer;
+}
+table tbody tr .size {
+    width: 30%;
+}
+table tbody tr .menu {
+    width: 10%;
+    text-align: right;
+}
+
+table tbody td p {
+    display: inline;
+}
+
+table tbody tr .name:hover p  {
+    text-decoration: underline;
 }
 
 table tbody td button {
     background-color: transparent;
     cursor: pointer;
-    width: 20px;
+    width: 15px;
     height: 20px;
     border: none;
     outline: none;
 }
 
 table tbody td img {
+    vertical-align: middle;
     width: 15px;
+    height: 20px;
 }
 
 table tbody td:first-child {
     padding-left: 20px;
-    display: flex;
-    align-items: center;
-}
-
-table tbody td:first-child p:hover {
-    text-decoration: underline;
-    cursor: pointer;
 }
 
 table tbody td:last-child {
     padding-right: 20px;
-    display: flex;
-    justify-content: right;
 }
 
 table tbody tr:hover {
     background-color: #505050;
+}
+
+table tbody tr .checkbox input{
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border: 1px solid #868686;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+table tbody tr .checkbox input:checked {
+    content: url("/assets/icons/checkmark.svg");
+    background-color: #3956ff;
+    border: none;
 }
 
 .editor-container {

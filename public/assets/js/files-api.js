@@ -40,7 +40,7 @@ async function create(filepathparam, filetypeparam, filenameparam) {
     }
 }
 
-async function deleteFile(filepathparam) {
+async function deleteFile(filepathparam, handlestatus = true) {
     closeModal();
     let response = await fetch('/api/delete', {
         method: "POST",
@@ -50,6 +50,9 @@ async function deleteFile(filepathparam) {
         },
         body: JSON.stringify({filepath: filepathparam})
     });
+    if (!handlestatus) {
+        return await response.json();
+    }
     handleStatus(await response.json());
     await loadFiles(lastFolder(filepathparam, true));
 }
@@ -93,7 +96,7 @@ async function downloadFile(filepathsarray) {
         },
         body: JSON.stringify({filepaths: filepathsarray})
     });
-    if (response.headers.get('Content-Type') === 'application/json') {
+    if (response.headers.get('Content-Type') !== 'application/octet-stream' && response.headers.get('Content-Type') !== 'application/zip') {
         handleStatus(await response.json());
         return;
     }

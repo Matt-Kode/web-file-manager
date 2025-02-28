@@ -12,12 +12,12 @@
 @section('content')
     <input type="file" class="file-input" multiple style="display: none;">
     <input type="file" class="folder-input" webkitdirectory multiple style="display: none;">
+    <div class="checked-options"><button onclick="initDownload()">Download</button><button onclick="deleteCheckedFiles()">Delete</button></div>
     <div class="uploads-container"><h1>Uploading</h1><p></p><div class="progress-bar-container"><div class="progress-bar"></div></div></div>
     <div class="context-menu" data-filepath="">
         <button onclick="openRenameModal(this.parentElement.getAttribute('data-filepath'))">Rename</button>
         <button onclick="openDeleteModal(this.parentElement.getAttribute('data-filepath'))">Delete</button>
         <button onclick="initDownload(this.parentElement.getAttribute('data-filepath'))">Download</button>
-        <button>Copy</button>
     </div>
     <div class="files-container">
         <div class="options">

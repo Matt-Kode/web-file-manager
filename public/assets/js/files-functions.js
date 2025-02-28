@@ -27,18 +27,20 @@ async function loadFiles(filepath) {
             if (content[i].type === 'dir') {
                 table.insertAdjacentHTML('beforeend', `
                 <tr data-filepath="${filepath + content[i].name  + '/'}">
-                    <td onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/directory.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
-                    <td></td>
-                    <td><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
+                    <td class="checkbox"><input type="checkbox"></td>
+                    <td class="name" onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/directory.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
+                    <td class="size"></td>
+                    <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
                 </tr>`);
 
             }
             if (content[i].type === 'file') {
                 table.insertAdjacentHTML('beforeend', `
                 <tr data-filepath="${filepath + content[i].name}">
-                    <td onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/file.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
-                    <td>${content[i].size}</td>
-                    <td><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
+                    <td class="checkbox"><input type="checkbox"></td>
+                    <td class="name" onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/file.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
+                    <td class="size">${content[i].size}</td>
+                    <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
                 </tr>`);
 
             }
@@ -95,15 +97,18 @@ function filePathLoader(filepath) {
     }
 }
 
-function handleStatus(data) {
+function handleStatus(data, errorsonly = false) {
     if (data.type === 'error') {
         displayNotification(data.content, 'error');
         return false;
     }
-    if (data.type === 'success') {
-        displayNotification(data.content, 'success');
-        return true;
+    if (!errorsonly) {
+        if (data.type === 'success') {
+            displayNotification(data.content, 'success');
+            return true;
+        }
     }
+    return true;
 }
 
 function displayUpload(currentstatus, filesuploaded, filestotal) {
@@ -208,7 +213,8 @@ function closeContextMenu() {
 }
 
 function openDeleteModal(filepath) {
-    openModal(`
+    if (filepath) {
+        openModal(`
         <h1>Delete file</h1>
         <p>Are you sure you want to delete this file?</p>
         <div class="buttons">
@@ -216,6 +222,29 @@ function openDeleteModal(filepath) {
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
         </div>
     `)
+    } else {
+        openModal(`
+        <h1>Delete file</h1>
+        <p>Are you sure you want to delete ${document.querySelectorAll(".checkbox:checked").length} file(s)?</p>
+        <div class="buttons">
+            <button class="submit-btn" onclick="deleteCheckedFiles()">Delete</button>
+            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    `)
+    }
+}
+
+async function deleteCheckedFiles() {
+    let checkedelements = document.querySelectorAll(".checkbox input:checked");
+    let successfuldeletions = 0;
+    for (let cb of checkedelements) {
+        let responsejson = await deleteFile(cb.parentElement.parentElement.getAttribute('data-filepath'), false);
+        if (handleStatus(responsejson, true)) {
+            successfuldeletions++;
+        }
+    }
+    displayNotification('Successfully deleted ' + successfuldeletions + ' of ' + checkedelements.length + ' selected files', 'success');
+    await loadFiles(lastFolder(checkedelements[0].parentElement.parentElement.getAttribute('data-filepath'), true));
 }
 
 function openRenameModal(filepath) {
@@ -252,11 +281,17 @@ function lastFolder(filepath, appendroot) {
     return newfilepath;
 }
 
-function initDownload(filepath) {
+async function initDownload(filepath) {
     if (filepath) {
-        downloadFile([filepath]);
-        return;
+        await downloadFile([filepath]);
     } else {
-        //TODO: download all checked files
+        let filepaths = [];
+        let checkedelements = document.querySelectorAll(".checkbox input:checked");
+
+        for (let cb of checkedelements) {
+            filepaths.push(cb.parentElement.parentElement.getAttribute('data-filepath'));
+        }
+
+        await downloadFile(filepaths);
     }
 }
