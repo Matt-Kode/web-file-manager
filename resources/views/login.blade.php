@@ -20,7 +20,7 @@
             <input type="password" id="password" name="password" placeholder="Password">
         </div>
 
-        <button type="submit" class="submit-btn">Login</button>
+        <button type="submit" class="submit-btn"><span>Login</span><span class="btn-loader"></span></button>
     </form>
 </div>
 <script src="/assets/js/login.js"></script>

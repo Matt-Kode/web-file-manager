@@ -1,0 +1,49 @@
+.changelogs-container {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 40px;
+    width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.changelogs-container * {
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+}
+
+.changelog {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    border-radius: 5px;
+    background-color: #1f1f1f;
+    width: 100%;
+    color: #fff;
+}
+
+.changelog .desc {
+    font-size: 14px;
+}
+
+.changelog .info {
+    color: #505050;
+}
+
+.changelog button {
+    background-color: #ff5046;
+    color: #fff;
+    border-radius: 5px;
+    outline: none;
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.changelog button:hover {
+    background-color: #fd4138;
+}

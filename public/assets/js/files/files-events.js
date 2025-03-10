@@ -3,6 +3,12 @@ window.addEventListener('load', (event) => {
 });
 
 window.addEventListener('click', (event) => {
+    if (event.target.parentElement === null) {
+        closeCreateDropdown();
+        closeUploadDropdown();
+        closeContextMenu();
+        return;
+    }
     if (!event.target.matches('.create-btn') && !event.target.matches('.create-btn *')) {
         closeCreateDropdown();
     }
@@ -11,7 +17,7 @@ window.addEventListener('click', (event) => {
     }
     if (event.target.parentElement.matches('.context-menu-btn')) {
         let filepath = event.target.parentElement.parentElement.parentElement.getAttribute('data-filepath');
-        toggleContextMenu(filepath, event.pageX-110, event.pageY);
+        toggleContextMenu(event.pageX-110, event.pageY, filepath);
     } else {
         closeContextMenu();
     }
@@ -61,3 +67,5 @@ window.addEventListener('change', async (event) => {
             await loadFiles(filepath);
         }
 })
+
+

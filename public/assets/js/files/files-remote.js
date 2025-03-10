@@ -1,5 +1,5 @@
 async function  fetchFiles(filepathparam) {
-    let response = await fetch('/api/get', {
+    let response = await fetch('/remote/get', {
         method: "POST",
         headers: {
             "Content-Type" : "application/json",
@@ -13,7 +13,7 @@ async function  fetchFiles(filepathparam) {
 async function saveFile(filepathparam) {
     let loader = document.querySelector(".btn-loader");
     loader.style.display = 'inline-block';
-    let response = await fetch('/api/put', {
+    let response = await fetch('/remote/put', {
         method: "POST",
         headers: {
             "Content-Type" : "application/json",
@@ -26,7 +26,7 @@ async function saveFile(filepathparam) {
 }
 
 async function create(filepathparam, filetypeparam, filenameparam) {
-    let response = await fetch('/api/create', {
+    let response = await fetch('/remote/create', {
         method: "POST",
         headers: {
             "Content-Type" : "application/json",
@@ -42,7 +42,7 @@ async function create(filepathparam, filetypeparam, filenameparam) {
 
 async function deleteFile(filepathparam, handlestatus = true) {
     closeModal();
-    let response = await fetch('/api/delete', {
+    let response = await fetch('/remote/delete', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -53,13 +53,13 @@ async function deleteFile(filepathparam, handlestatus = true) {
     if (!handlestatus) {
         return await response.json();
     }
-    handleStatus(await response.json());
-    await loadFiles(lastFolder(filepathparam, true));
+    handleStatus(await response.json(), true);
+    await loadFiles(lastFolder(filepathparam, true))
 }
 
 async function renameFile(filepathparam, newfilenameparam) {
     closeModal();
-    let response = await fetch('/api/rename', {
+    let response = await fetch('/remote/rename', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ async function uploadFile(filepathparam, file) {
     let form = new FormData();
     form.append('file', file);
     form.append('filepath', filepathparam);
-    let response = await fetch('/api/upload', {
+    let response = await fetch('/remote/upload', {
         method: "POST",
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
@@ -88,7 +88,7 @@ async function uploadFile(filepathparam, file) {
 }
 
 async function downloadFile(filepathsarray) {
-    let response = await fetch('/api/download', {
+    let response = await fetch('/remote/download', {
         method: "POST",
         headers:  {
             "Content-Type": "application/json",

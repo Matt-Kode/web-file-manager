@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'username' => 'darius',
             'password' => Hash::make('password'),
-            'permission' => 0
+            'is_admin' => 1
         ]);
     }
 }

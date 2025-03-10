@@ -1,17 +1,21 @@
-const table = document.querySelector('.file-table');
+const table = document.querySelector('.table-body');
+const filescontainer = document.querySelector('.files-container');
 const filepathcontainer = document.querySelector('.file-path');
 const actionscontainer = document.querySelector('.actions');
+const optionscontainer = document.querySelector('.options');
 let editor = null;
 const editorcontainer = document.querySelector(".editor-container");
 const fileinput = document.querySelector(".file-input");
 const folderinput = document.querySelector(".folder-input");
 const uploadcontainer = document.querySelector(".uploads-container");
+const checkedoptions = document.querySelector(".checked-options");
 
 
 
 async function loadFiles(filepath) {
     table.innerHTML = '';
     closeEditor();
+    checkedoptions.style.display = "none";
     let data = await fetchFiles(filepath);
     if (data.type === 'dir' && data.content.length === 0) {
         loadActions(filepath);
@@ -26,8 +30,8 @@ async function loadFiles(filepath) {
         for (let i = 0; i<content.length; i++) {
             if (content[i].type === 'dir') {
                 table.insertAdjacentHTML('beforeend', `
-                <tr data-filepath="${filepath + content[i].name  + '/'}">
-                    <td class="checkbox"><input type="checkbox"></td>
+                <tr data-filepath="${(filepath === '/' ? '' : filepath) + '/' + content[i].name}">
+                    <td class="checkbox"><input type="checkbox" onchange="checkOptions(this)"></td>
                     <td class="name" onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/directory.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
                     <td class="size"></td>
                     <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
@@ -36,8 +40,8 @@ async function loadFiles(filepath) {
             }
             if (content[i].type === 'file') {
                 table.insertAdjacentHTML('beforeend', `
-                <tr data-filepath="${filepath + content[i].name}">
-                    <td class="checkbox"><input type="checkbox"></td>
+                <tr data-filepath="${(filepath === '/' ? '' : filepath) + '/' + content[i].name}">
+                    <td class="checkbox"><input type="checkbox" onchange="checkOptions(this)"></td>
                     <td class="name" onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/file.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
                     <td class="size">${content[i].size}</td>
                     <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
@@ -56,19 +60,24 @@ async function loadFiles(filepath) {
     if (data.type === 'error') {
         displayNotification(data.content, 'error');
     }
-
 }
 
 function loadEditor(filepath, filetype, content) {
     actionscontainer.innerHTML = '';
-    editorcontainer.innerHTML = `<div id="editor"></div><button class="save-btn" data-filepath=${filepath} onclick="saveFile(this.getAttribute('data-filepath'))">Save file&nbsp;&nbsp;<span class="btn-loader"></span></button>`
+    editorcontainer.innerHTML = `<div id="editor"></div>`
     editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/" + filetype);
+    filescontainer.style.width = '100vw';
+    optionscontainer.style.padding = '0 20px';
+    actionscontainer.innerHTML = `<button class="save-btn" data-filepath="${filepath}" onclick="saveFile(this.getAttribute('data-filepath'))"><span>Save</span><span class="btn-loader"></span></button>`;
     editor.setValue(content);
 }
 
 function closeEditor() {
+    filescontainer.style = '';
+    optionscontainer.style = '';
+    actionscontainer.innerHTML = '';
     editorcontainer.innerHTML = '';
     editor = null;
 }
@@ -83,9 +92,9 @@ function filePathLoader(filepath) {
     }
     filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="/" onclick="loadFiles(this.getAttribute('data-filepath'))">root</button><span>&nbsp;>&nbsp;</span>`);
     for (let i = 0; i<files.length; i++) {
-        let currentfilepath = '/';
+        let currentfilepath = '';
         for (let j = 0; j<=i; j++) {
-            currentfilepath += files[j] +  '/';
+            currentfilepath += '/' + files[j];
         }
         if (currentfilepath) {
             if (i+1 === files.length) {
@@ -97,27 +106,12 @@ function filePathLoader(filepath) {
     }
 }
 
-function handleStatus(data, errorsonly = false) {
-    if (data.type === 'error') {
-        displayNotification(data.content, 'error');
-        return false;
-    }
-    if (!errorsonly) {
-        if (data.type === 'success') {
-            displayNotification(data.content, 'success');
-            return true;
-        }
-    }
-    return true;
-}
-
 function displayUpload(currentstatus, filesuploaded, filestotal) {
     if (currentstatus === "complete") {
-        uploadcontainer.style.display = 'none';
+        uploadcontainer.style = '';
     }
     if (currentstatus === "in_progress") {
         let percent = (filesuploaded / filestotal) * 100;
-        console.log(percent);
         uploadcontainer.style.display = 'flex';
         uploadcontainer.querySelector("p").textContent = `${filesuploaded} of ${filestotal} uploaded`;
         uploadcontainer.querySelector(".progress-bar").style.width = percent + "%";
@@ -196,22 +190,6 @@ function openCreateFolderModal(filepath) {
     `)
 }
 
-function toggleContextMenu(filepath, posx, posy) {
-        let contextmenu = document.querySelector(".context-menu");
-        contextmenu.setAttribute("data-filepath", filepath);
-        contextmenu.classList.toggle('show');
-        contextmenu.style.top = posy + 'px';
-        contextmenu.style.left = posx + 'px';
-}
-
-function closeContextMenu() {
-    document.querySelectorAll('.context-menu').forEach(function(menu) {
-        if (menu.classList.contains('show')) {
-            menu.classList.remove('show');
-        }
-    })
-}
-
 function openDeleteModal(filepath) {
     if (filepath) {
         openModal(`
@@ -225,7 +203,7 @@ function openDeleteModal(filepath) {
     } else {
         openModal(`
         <h1>Delete file</h1>
-        <p>Are you sure you want to delete ${document.querySelectorAll(".checkbox:checked").length} file(s)?</p>
+        <p>Are you sure you want to delete ${document.querySelectorAll(".checkbox input:checked").length} file(s)?</p>
         <div class="buttons">
             <button class="submit-btn" onclick="deleteCheckedFiles()">Delete</button>
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
@@ -243,8 +221,9 @@ async function deleteCheckedFiles() {
             successfuldeletions++;
         }
     }
-    displayNotification('Successfully deleted ' + successfuldeletions + ' of ' + checkedelements.length + ' selected files', 'success');
-    await loadFiles(lastFolder(checkedelements[0].parentElement.parentElement.getAttribute('data-filepath'), true));
+    if (successfuldeletions > 0) {
+        await loadFiles(lastFolder(checkedelements[0].parentElement.parentElement.getAttribute('data-filepath'), true));
+    }
 }
 
 function openRenameModal(filepath) {
@@ -275,7 +254,7 @@ function lastFolder(filepath, appendroot) {
     let newfilepath = appendroot ? '/' : '';
     let counter = 0;
     while (counter < filenames.length - 1) {
-        newfilepath +=  filenames[counter] + '/';
+        newfilepath +=  '/' + filenames[counter];
         counter++;
     }
     return newfilepath;
@@ -293,5 +272,21 @@ async function initDownload(filepath) {
         }
 
         await downloadFile(filepaths);
+    }
+}
+
+function checkOptions(targetcb) {
+    if (targetcb.checked) {
+        checkedoptions.style.display = 'flex';
+    } else {
+        let displayoptions = false;
+        document.querySelectorAll(".checkbox input").forEach((elm) => {
+            if (elm.checked) {
+                displayoptions = true;
+            }
+        })
+        if (!displayoptions) {
+            checkedoptions.style = '';
+        }
     }
 }

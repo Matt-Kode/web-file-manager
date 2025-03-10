@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 .files-container {
     margin-right: auto;
@@ -9,9 +8,9 @@
     flex-direction: column;
 }
 
-table *, .options *, .context-menu *, .uploads-container * {
+table *, .options *, .context-menu *, .uploads-container *, .checked-options *{
     font-family: "Poppins", sans-serif;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 table {
@@ -87,7 +86,7 @@ table tbody tr:hover {
     background-color: #505050;
 }
 
-table tbody tr .checkbox input{
+table tbody tr .checkbox input {
     appearance: none;
     width: 20px;
     height: 20px;
@@ -100,7 +99,7 @@ table tbody tr .checkbox input{
 table tbody tr .checkbox input:checked {
     content: url("/assets/icons/checkmark.svg");
     background-color: #3956ff;
-    border: none;
+    border-color: #3956ff;
 }
 
 .editor-container {
@@ -109,7 +108,7 @@ table tbody tr .checkbox input:checked {
 }
 
 #editor {
-    height: 600px;
+    height: calc(100vh - 178px);
     width: 100%;
     font-family: "Roboto Mono", "Courier New";
     font-size: 14pt;
@@ -118,7 +117,7 @@ table tbody tr .checkbox input:checked {
 .options {
     display: flex;
     align-items: center;
-    width:100%;
+    width: 100%;
     margin-bottom: 10px;
     justify-content: space-between;
 }
@@ -141,7 +140,6 @@ table tbody tr .checkbox input:checked {
 }
 
 .save-btn {
-    margin-top: 10px;
     display: flex;
     align-items: center;
     padding: 10px 20px;
@@ -232,38 +230,9 @@ table tbody tr .checkbox input:checked {
     transform: rotate(180deg);
 }
 
-.context-menu {
-    background-color: transparent;
-    width: 100px;
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    border-radius: 5px;
-    overflow: hidden;
-    border: 1px solid #505050;
-}
-
-.context-menu.show {
-    display: flex;
-}
-
-.context-menu button {
-    text-align: left;
-    display: block;
-    border: none;
-    outline: none;
-    padding: 10px;
-    color: #fff;
-    width: 100%;
-    background-color: #1f1f1f;
-}
-
-.context-menu button:hover {
-    background-color: #505050;
-}
-
 .uploads-container {
     display: none;
+    border: 1px solid #505050;
     flex-direction: column;
     gap: 5px;
     position: fixed;
@@ -298,5 +267,27 @@ table tbody tr .checkbox input:checked {
     width: 0;
     background-color: #3956ff;
     height: 100%;
+}
+
+.checked-options {
+    display: none;
+    gap: 10px;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 25px;
+    border-radius: 5px;
+    background-color: #1f1f1f;
+    border: 1px solid #505050;
+}
+
+.checked-options button {
+    border-radius: 5px;
+    background-color: #3956ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
 }
 

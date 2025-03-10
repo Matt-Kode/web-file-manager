@@ -2,122 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use http\Env\Response;
+use App\Models\Changelog;
 use Illuminate\Http\Request;
+use App\Helpers\RemoteFs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class FileController extends Controller
 {
-    const API_URL = 'http://site2.localhost';
-
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         $filepath = $request->input('filepath');
-        if (!$this->apiCall('/api/get.php', ['content-type' => 'application/json'], ['filepath' => $filepath])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to retrieve files']);
-        }
-        return;
+        return RemoteFs::get($filepath);
     }
 
     public function put(Request $request) {
         $filepath = $request->input('filepath');
         $content = $request->input('content');
-
-        if (!$this->apiCall('/api/put.php', ['content-type' => 'application/json'], ['filepath' => $filepath, 'content' => $content])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to save file']);
+        $response = RemoteFs::put($filepath, $content);
+        $responsedata = json_decode($response->getContent());
+        if ($responsedata->type !== 'success') {
+            return $response;
         }
-        return;
+        $changelog = new Changelog();
+        $changelog->createLog('edit', $filepath, Auth::user()->id, $responsedata->old_file_content, $content);
+        return $response;
     }
 
     public function create(Request $request) {
         $filepath = $request->input('filepath');
         $filename = $request->input('filename');
         $filetype = $request->input('filetype');
-
-        if (!$this->apiCall('/api/create.php', ['content-type' => 'application/json'], ['filepath' => $filepath, 'filename' => $filename, 'filetype' => $filetype])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to create file/folder']);
-        }
-        return;
+        return RemoteFs::create($filepath, $filename, $filetype);
     }
 
     public function delete(Request $request) {
         $filepath = $request->input('filepath');
-
-        if (!$this->apiCall('/api/delete.php', ['content-type' => 'application/json'], ['filepath' => $filepath])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to delete file']);
+        $response = RemoteFs::move($filepath, 'deleted_files');
+        $responsedata = json_decode($response->getContent());
+        if ($responsedata->type !== 'success') {
+            return $response;
         }
-        return;
+        $changelog = new Changelog();
+        $changelog->createLog('delete', $filepath, Auth::user()->id);
+        return $response;
     }
 
     public function rename(Request $request) {
         $filepath = $request->input('filepath');
         $newfilename = $request->input('newfilename');
 
-        if (!$this->apiCall('/api/rename.php', ['content-type' => 'application/json'], ['filepath' => $filepath, 'newfilename' => $newfilename])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to rename file']);
-        }
-        return;
+        return RemoteFs::rename($filepath, $newfilename);
     }
 
     public function upload(Request $request) {
         $filepath = $request->input('filepath');
         $file = $request->file('file');
-        if (!$this->apiUpload('/api/upload.php', [], [['name' => 'file', 'contents' => fopen($file->getPathname(), 'r'), 'filename' => $file->getClientOriginalName()], ['name' => 'filepath', 'contents' => $filepath]])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to upload file']);
-        }
-        return;
+
+        return RemoteFs::upload($filepath, $file);
     }
 
     public function download(Request $request) {
         $filepaths = $request->input('filepaths');
-        if (!$this->apiCall('/api/download.php', ['content-type' => 'application/json'], ['filepaths' => $filepaths])) {
-            return response()->json(['type'=>'error', 'content' => 'Failed to download file']);
-        }
-    }
-
-    private function apiCall($route, $headers, $params) {
-        $headers += ['Authorization' => 'Bearer ' . signTokenWithPermission(Auth::user()->permission)];
-        $client = new Client([
-            'base_uri' => self::API_URL
-        ]);
-        try {
-            $response = $client->request('POST', $route,  [
-                'headers' => $headers,
-                'json' => $params,
-            ]);
-            if ($response->getStatusCode() == 200) {
-                if ($response->hasHeader('File-Name')) {
-                    header('File-Name: ' . $response->getHeader('File-Name')[0]);
-                }
-                header('Content-Type: ' . $response->getHeader('Content-Type')[0]);
-                 echo $response->getBody();
-                 return true;
-            }
-        } catch (ClientException $e) {
-            return false;
-        }
-        return false;
-    }
-
-    private function apiUpload($route, $headers, $params) {
-        $headers += ['Authorization' => 'Bearer ' . signTokenWithPermission(Auth::user()->permission)];
-        $client = new Client([
-            'base_uri' => self::API_URL
-        ]);
-        try {
-            $response = $client->request('POST', $route,  [
-                'headers' => $headers,
-                'multipart' => $params,
-            ]);
-            if ($response->getStatusCode() == 200) {
-                echo $response->getBody();
-                return true;
-            }
-        } catch (ClientException $e) {
-            return false;
-        }
-        return false;
+        return RemoteFs::download($filepaths);
     }
 }

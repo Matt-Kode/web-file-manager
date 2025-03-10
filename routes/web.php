@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\RulesController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\AuthAdmin;
+use App\Http\Middleware\AuthAdminRemote;
 use App\Http\Middleware\AuthUser;
-use App\Http\Middleware\AuthUserApi;
+use App\Http\Middleware\AuthUserRemote;
 use App\Http\Middleware\VerifyCsrf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +28,23 @@ Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('aut
 
 Route::get('/files', function () {return view('files');})->middleware(AuthUser::class)->name('files');
 
-Route::group(['prefix' => '/api', 'middleware' => [AuthUserApi::class, VerifyCsrf::class]], function() {
+Route::group(['prefix' => '/changelogs'], function () {
+    Route::get('/', function () {return view('changelogs');})->middleware(AuthUser::class)->name('changelogs');
+    Route::post('/', [ChangelogController::class, 'get'])->middleware(AuthUserRemote::class)->name('changelogs.get');
+    Route::post('/revert_edit', [ChangelogController::class, 'revertEdit'])->middleware(AuthUserRemote::class)->name('changelogs.revertedit');
+    Route::post('/revert_delete', [ChangelogController::class, 'revertDelete'])->middleware(AuthUserRemote::class)->name('changelogs.revertdeletion');
+});
+
+Route::group(['prefix' => '/users'], function () {
+    Route::get('/', function () {return view('users');})->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('users');
+    Route::post('/', [UserController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.get');
+    Route::post('/add', [UserController::class, 'add'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.add');
+    Route::post('/update', [UserController::class, 'update'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.update');
+    Route::get('/{id}/rules', [RulesController::class, 'index'])->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('users.rules');
+    Route::post('/{id}/rules', [RulesController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.rules.get');
+});
+
+Route::group(['prefix' => '/remote', 'middleware' => [AuthUserRemote::class, VerifyCsrf::class]], function() {
    Route::post('/get', [FileController::class, 'get'])->name('file.get');
    Route::post('/upload', [FileController::class, 'upload'])->name('file.upload');
     Route::post('/download', [FileController::class, 'download'])->name('file.download');
@@ -31,4 +52,5 @@ Route::group(['prefix' => '/api', 'middleware' => [AuthUserApi::class, VerifyCsr
    Route::post('/put', [FileController::class, 'put'])->name('file.put');
    Route::post('/rename', [FileController::class, 'rename'])->name('file.rename');
     Route::post('/create', [FileController::class, 'create'])->name('file.create');
+    Route::post('/move', [FileController::class, 'move'])->name('file.move');
 });

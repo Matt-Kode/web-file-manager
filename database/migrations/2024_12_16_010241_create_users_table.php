@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id()->primary();
             $table->string('username')->unique();
             $table->string('password');
-            $table->integer('permission');
+            $table->integer('is_admin');
         });
     }
 

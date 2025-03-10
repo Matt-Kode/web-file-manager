@@ -1,3 +1,4 @@
+const btnloader = document.querySelector('.btn-loader');
 let error_count = 0;
 
 window.addEventListener('submit', (e) => {
@@ -10,6 +11,7 @@ window.addEventListener('submit', (e) => {
 
 async function attemptLogin(name, pass) {
 
+    btnloader.style.display = 'inline-block';
     let response = await fetch('/authenticate', {
         method: "POST",
         headers: {
@@ -22,11 +24,13 @@ async function attemptLogin(name, pass) {
     let data = await response.json();
 
     if (response.status === 200) {
+        btnloader.style = '';
         window.location.href = "/files";
         return;
     }
 
     if (response.status === 400) {
+        btnloader.style = '';
         displayError(data.error, error_count);
     }
 

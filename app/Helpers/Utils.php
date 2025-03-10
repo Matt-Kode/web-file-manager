@@ -1,0 +1,17 @@
+<?php
+function signTokenWithPermission($permission) {
+    $token = config('api.api_key') . '.' . $permission;
+    $hashed_key = hash_hmac('sha256', $token, config('api.secret_key'));
+    return $token . "." . $hashed_key;
+}
+
+function getLastFolder(String $currentpath) : String {
+    $currentpatharray = explode('/', $currentpath);
+    $counter = 1;
+    $newfilepath = '';
+    while ($counter < count($currentpatharray) - 1) {
+        $newfilepath .= '/' . $currentpatharray[$counter];
+        $counter++;
+    }
+    return $newfilepath;
+}

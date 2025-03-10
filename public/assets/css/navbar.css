@@ -8,6 +8,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 25px 20px;
+    height: 75px;
     background-color: #1f1f1f;
     color: white;
 }
@@ -24,7 +25,11 @@
 }
 
 .navbar .logout a {
-    background: linear-gradient(to left, #0025e3, #001680);
+    background-color: #3956ff;
+}
+
+.navbar .logout a:hover {
+    background-color: #2243f8;
 }
 
 .navbar .links,

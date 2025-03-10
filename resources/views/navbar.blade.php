@@ -6,7 +6,10 @@
     </div>
     <div class="links">
         <li><a href="{{ route('files') }}" class="{{ Request::is('files') ? 'active' : '' }}">Files</a></li>
-        <li><a href="#" class="{{ Request::is('changelog.blade.php') ? 'active' : '' }}">Changelog</a></li>
+        <li><a href="{{ route('changelogs') }}" class="{{ Request::is('changelogs') ? 'active' : '' }}">Changelogs</a></li>
+        @if (Auth::user()->is_admin === 1)
+            <li><a href="{{ route('users') }}" class="{{ in_array(Route::currentRouteName(), ['users', 'users.rules']) ? 'active' : '' }}">Users</a></li>
+        @endif
     </div>
     <ul class="logout">
         <li><a href="{{ route('logout') }}">Logout</a></li>

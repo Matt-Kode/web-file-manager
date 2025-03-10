@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthUserApi
+class AuthUserRemote
 {
     /**
      * Handle an incoming request.
@@ -19,7 +19,7 @@ class AuthUserApi
         if (Auth::check()) {
             return $next($request);
         } else {
-            return response()->json(['type'=>'error','content'=>'Session has expired. Refresh and try again.']);
+            return response()->json(['type'=>'error','content'=>'No permission']);
         }
     }
 }

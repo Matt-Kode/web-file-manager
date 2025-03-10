@@ -52,6 +52,37 @@
         }
 
     }
+    function toggleContextMenu(posx, posy, filepath) {
+        let contextmenu = document.querySelector(".context-menu");
+        if (filepath) {
+            contextmenu.setAttribute("data-filepath", filepath);
+        }
+        contextmenu.classList.toggle('show');
+        contextmenu.style.top = posy + 'px';
+        contextmenu.style.left = posx + 'px';
+    }
+
+    function closeContextMenu() {
+        document.querySelectorAll('.context-menu').forEach(function(menu) {
+            if (menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        })
+    }
+
+    function handleStatus(data, errorsonly = false) {
+        if (data.type === 'error') {
+            displayNotification(data.content, 'error');
+            return false;
+        }
+        if (!errorsonly) {
+            if (data.type === 'success') {
+                displayNotification(data.content, 'success');
+                return true;
+            }
+        }
+        return true;
+    }
 </script>
 @stack('scripts')
 </html>
