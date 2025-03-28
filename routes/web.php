@@ -31,8 +31,10 @@ Route::get('/files', function () {return view('files');})->middleware(AuthUser::
 Route::group(['prefix' => '/changelogs'], function () {
     Route::get('/', function () {return view('changelogs');})->middleware(AuthUser::class)->name('changelogs');
     Route::post('/', [ChangelogController::class, 'get'])->middleware(AuthUserRemote::class)->name('changelogs.get');
-    Route::post('/revert_edit', [ChangelogController::class, 'revertEdit'])->middleware(AuthUserRemote::class)->name('changelogs.revertedit');
-    Route::post('/revert_delete', [ChangelogController::class, 'revertDelete'])->middleware(AuthUserRemote::class)->name('changelogs.revertdeletion');
+    Route::get('/{id}', [ChangelogController::class, 'index'])->middleware(AuthUser::class)->name('changelogs.view');
+    Route::post('/{id}', [ChangelogController::class, 'getChangelogDiff'])->middleware(AuthUserRemote::class)->name('changelogs.get.diff');
+    Route::post('/{id}/accept', [ChangelogController::class, 'acceptEdit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.revertedit');
+    Route::post('/{id}/reject', [ChangelogController::class, 'rejectEdit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.revertdeletion');
 });
 
 Route::group(['prefix' => '/users'], function () {
@@ -42,6 +44,7 @@ Route::group(['prefix' => '/users'], function () {
     Route::post('/update', [UserController::class, 'update'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.update');
     Route::get('/{id}/rules', [RulesController::class, 'index'])->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('users.rules');
     Route::post('/{id}/rules', [RulesController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.rules.get');
+    Route::post('/{id}/rules/create', [RulesController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.rules.create');
 });
 
 Route::group(['prefix' => '/remote', 'middleware' => [AuthUserRemote::class, VerifyCsrf::class]], function() {

@@ -32,7 +32,8 @@
         },
         "files": [
             "app/Helpers/RemoteFs.php",
-            "app/Helpers/Utils.php"
+            "app/Helpers/Utils.php",
+            "app/Helpers/Diff.php"
         ]
     },
     "autoload-dev": {

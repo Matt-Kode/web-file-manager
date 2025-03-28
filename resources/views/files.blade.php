@@ -19,6 +19,8 @@
         <button onclick="openDeleteModal(this.parentElement.getAttribute('data-filepath'))">Delete</button>
         <button onclick="initDownload(this.parentElement.getAttribute('data-filepath'))">Download</button>
     </div>
+    <div class="editor-container"></div>
+    <div class="editor-options"></div>
     <div class="files-container">
         <div class="options">
             <div class="file-path"></div>
@@ -28,7 +30,5 @@
             <tbody class="table-body">
             </tbody>
         </table>
-        <div class="editor-container">
-        </div>
     </div>
 @endsection

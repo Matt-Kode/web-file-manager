@@ -9,12 +9,12 @@ const fileinput = document.querySelector(".file-input");
 const folderinput = document.querySelector(".folder-input");
 const uploadcontainer = document.querySelector(".uploads-container");
 const checkedoptions = document.querySelector(".checked-options");
+const editoroptions = document.querySelector(".editor-options");
 
 
 
 async function loadFiles(filepath) {
     table.innerHTML = '';
-    closeEditor();
     checkedoptions.style.display = "none";
     let data = await fetchFiles(filepath);
     if (data.type === 'dir' && data.content.length === 0) {
@@ -46,7 +46,6 @@ async function loadFiles(filepath) {
                     <td class="size">${content[i].size}</td>
                     <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
                 </tr>`);
-
             }
         }
         filePathLoader(filepath);
@@ -54,7 +53,6 @@ async function loadFiles(filepath) {
     }
     if (data.type === 'file') {
         loadEditor(filepath, data.extension, data.content);
-        filePathLoader(filepath);
         return;
     }
     if (data.type === 'error') {
@@ -63,21 +61,24 @@ async function loadFiles(filepath) {
 }
 
 function loadEditor(filepath, filetype, content) {
-    actionscontainer.innerHTML = '';
     editorcontainer.innerHTML = `<div id="editor"></div>`
     editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/" + filetype);
-    filescontainer.style.width = '100vw';
-    optionscontainer.style.padding = '0 20px';
-    actionscontainer.innerHTML = `<button class="save-btn" data-filepath="${filepath}" onclick="saveFile(this.getAttribute('data-filepath'))"><span>Save</span><span class="btn-loader"></span></button>`;
     editor.setValue(content);
+    editoroptions.style.display = 'flex';
+    editoroptions.innerHTML = `
+    <button class="back-btn" onclick="closeEditor(); loadFiles(lastFolder('${filepath}', true))">
+        <span>Back</span>
+    </button>
+    <button class="save-btn" data-filepath="${filepath}" onclick="saveFile(this.getAttribute('data-filepath'))">
+        <span>Save</span>
+        <span class="btn-loader"></span>
+    </button>`
 }
 
 function closeEditor() {
-    filescontainer.style = '';
-    optionscontainer.style = '';
-    actionscontainer.innerHTML = '';
+    editoroptions.style.display = 'none';
     editorcontainer.innerHTML = '';
     editor = null;
 }
@@ -230,7 +231,7 @@ function openRenameModal(filepath) {
     openModal(`
         <form>
             <h1>Rename file</h1>
-            <input type="text" name="filename" placeholder="New name">
+            <input type="text" name="filename" placeholder="New name" value="">
             <div class="buttons">
                 <button class="submit-btn" type="submit" onclick="renameFile('${filepath}', document.querySelector('input[name=filename]').value)">Submit</button>
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>

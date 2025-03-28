@@ -12,15 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rules', function (Blueprint $table) {
+            $table->id();
             $table->integer('user_id');
             $table->string('filepath');
+            $table->integer('priority');
             $table->integer('view');
+            $table->integer('edit');
             $table->integer('create');
             $table->integer('rename');
-            $table->integer('edit');
-            $table->integer('delete');
             $table->integer('download');
             $table->integer('upload');
+            $table->integer('delete');
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('rules');
     }
 };

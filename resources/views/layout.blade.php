@@ -39,13 +39,13 @@
         let notificationid = notificationcount;
         notificationcount++;
         if (type === 'error') {
-            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="background-color: #ff5046" id="notification_${notificationid}"><p><img src="/assets/icons/error.svg">&nbsp;&nbsp;${notification}</p></div>`);
+            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="border-color: #ff5046" id="notification_${notificationid}"><p><img src="/assets/icons/error.svg">&nbsp;&nbsp;${notification}</p></div>`);
             setTimeout(function () {
                 document.getElementById("notification_" + notificationid).remove()
             }, 10000);
         }
         if (type === 'success') {
-            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="background-color: #5bc25b" id="notification_${notificationid}"><p><img src="/assets/icons/success.svg">&nbsp;&nbsp;${notification}</p></div>`);
+            document.querySelector(".notifications").insertAdjacentHTML('beforeend', `<div class="notification-box" style="border-color: #5bc25b" id="notification_${notificationid}"><p><img src="/assets/icons/success.svg">&nbsp;&nbsp;${notification}</p></div>`);
             setTimeout(function () {
                 document.getElementById("notification_" + notificationid).remove()
             }, 10000);
@@ -82,6 +82,23 @@
             }
         }
         return true;
+    }
+
+    function disableButtons(bool) {
+        let buttons = document.querySelectorAll('button');
+        if (!bool) {
+            for (let btn of buttons) {
+                btn.disabled = false;
+            }
+        } else {
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+    }
+
+    function displayButtonLoader(btn, bool) {
+        btn.getElementById('btn-loader').style.display = bool ? 'inline-block' : 'none';
     }
 </script>
 @stack('scripts')

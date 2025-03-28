@@ -42,7 +42,7 @@
 .user .actions {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 10px;
 }
 
 .options {

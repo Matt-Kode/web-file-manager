@@ -19,7 +19,7 @@ class AuthUserRemote
         if (Auth::check()) {
             return $next($request);
         } else {
-            return response()->json(['type'=>'error','content'=>'No permission']);
+            return response()->json(['type'=>'error','content'=>'Session expired. Please login again.']);
         }
     }
 }

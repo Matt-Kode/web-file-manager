@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Diff;
 use App\Helpers\RemoteFs;
 use App\Models\Changelog;
 use App\Models\User;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -20,44 +22,64 @@ class ChangelogController extends Controller
             $data['changelogs'][] = ['id' => $cl->id,
                 'action' => $cl->action,
                 'filepath' => $cl->filepath,
+                'approved' => $cl->approved,
                 'done_by' => $cl->user->username,
                 'done_at' => $done_at];
         }
         return response()->json($data);
     }
 
-    public function revertEdit(Request $request) {
-        if (Auth::user()->is_admin !== 1) {
-            return response()->json(['type' => 'error', 'content' => 'No permission']);
+    public function index($changelogid) {
+            if (Changelog::find($changelogid)) {
+                return view('changelog');
+            }
+            abort(404);
+    }
+
+    public function getChangelogDiff($changelogid) {
+        $changelog = Changelog::find($changelogid);
+        if (!$changelog || $changelog->action !== 'edit') {
+            return response()->json(['type' => 'error', 'content' => 'Cannot find this changelog']);
         }
-        $details = Changelog::find($request->post('id'));
-        if ($details->action !== 'edit') {
-            return response()->json(['type' => 'error', 'content' => 'Unable to do operation']);
+        $reviewed = false;
+        if ($changelog->approved === 0 || $changelog->approved === 1) {
+            $reviewed = true;
         }
-        $response = RemoteFs::put($details->filepath, $details->old_content);
+        $diff = (new Diff($changelog->old_content, $changelog->new_content))->run();
+        return response()->json(['type' => 'success', 'diff' => $diff, 'is_admin' => Auth::user()->is_admin, 'reviewed' => $reviewed, 'reviewed_by' => $reviewed ? User::find($changelog->reviewed_by)->username : null]);
+    }
+    public function acceptEdit(Request $request, $clid) {
+        $changelog = Changelog::find($clid);
+        if (!$changelog) {
+            return response()->json(['type' => 'error', 'content' => 'Cannot find this changelog']);
+        }
+        if ($changelog->approved === 1 || $changelog->approved === 0) {
+            return response()->json(['type' => 'reviewed', 'content' => 'Changelog has already been reviewed']);
+        }
+        $response = RemoteFs::put($changelog->filepath, $changelog->new_content, ['old_content' => $changelog->old_content]);
         $responsedata = json_decode($response->getContent());
         if ($responsedata->type !== 'success') {
             return $response;
         }
-        Changelog::destroy($request->post('id'));
+        $changelog->approved = 1;
+        $changelog->done_at = Carbon::now();
+        $changelog->reviewed_by = Auth::user()->id;
+        $changelog->save();
         return $response;
     }
 
-    public function revertDelete(Request $request) {
-        if (Auth::user()->is_admin !== 1) {
-            return response()->json(['type' => 'error', 'content' => 'No permission']);
+    public function rejectEdit(Request $request, $clid) {
+        $changelog = Changelog::find($clid);
+        if (!$changelog) {
+            return response()->json(['type' => 'error', 'content' => 'Cannot find this changelog']);
         }
-        $details = Changelog::find($request->post('id'));
-
-        if ($details->action !== 'delete') {
-            return response()->json(['type' => 'error', 'content' => 'Unable to do operation']);
+        if ($changelog->approved === 1 || $changelog->approved === 0) {
+            return response()->json(['type' => 'reviewed', 'content' => 'Changelog has already been reviewed']);
         }
-        $response = RemoteFs::move('deleted_files/' . basename($details->filepath), getLastFolder($details->filepath));
-        $responsedata = json_decode($response->getContent());
-        if ($responsedata->type !== 'success') {
-            return $response;
-        }
-        Changelog::destroy($request->post('id'));
-        return $response;
+        $changelog->approved = 0;
+        $changelog->done_at = Carbon::now();
+        $changelog->reviewed_by = Auth::user()->id;
+        $changelog->save();
+        return response()->json(['type' => 'success', 'content' => 'Changelog rejected']);
     }
 }

@@ -38,7 +38,7 @@ async function attemptLogin(name, pass) {
 
 function displayError(error, error_number) {
     error_count++;
-    document.querySelector(".errors").insertAdjacentHTML('beforeend', `<div class="error-box" style="background-color: #ff5046" id="${error_number}"><p><img src="/assets/icons/error.svg">&nbsp;&nbsp;${error}</p></div>`);
+    document.querySelector(".errors").insertAdjacentHTML('beforeend', `<div class="error-box" style="border-color: #ff5046" id="${error_number}"><p><img src="/assets/icons/error.svg">&nbsp;&nbsp;${error}</p></div>`);
     setTimeout(function () {
         document.getElementById(error_number).remove()
     }, 10000);

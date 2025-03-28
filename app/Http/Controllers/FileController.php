@@ -13,57 +13,81 @@ class FileController extends Controller
     public function get(Request $request)
     {
         $filepath = $request->input('filepath');
+        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'view')) {
+            return response()->json(['type' => 'no_permission']);
+        }
         return RemoteFs::get($filepath);
     }
 
     public function put(Request $request) {
         $filepath = $request->input('filepath');
         $content = $request->input('content');
-        $response = RemoteFs::put($filepath, $content);
+        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'edit')) {
+            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
+        }
+        if (Auth::user()->is_admin) {
+            $changelog = new Changelog();
+            $response = RemoteFs::put($filepath, $content);
+            $responsedata = json_decode($response->getContent());
+            if ($responsedata->type !== 'success') {
+                return $response;
+            }
+            $changelog->createLog('edit', $filepath, Auth::user()->id, $responsedata->old_file_content, $content, 1, Auth::user()->id);
+            return $response;
+        }
+        $response = RemoteFs::get($filepath);
         $responsedata = json_decode($response->getContent());
-        if ($responsedata->type !== 'success') {
+        if ($responsedata->type === 'error') {
             return $response;
         }
         $changelog = new Changelog();
-        $changelog->createLog('edit', $filepath, Auth::user()->id, $responsedata->old_file_content, $content);
-        return $response;
+        $changelog->createLog('edit', $filepath, Auth::user()->id, $responsedata->content, $content, 2);
+        return response()->json(['type' => 'success', 'content' => 'Submitted file edit for review']);
     }
 
     public function create(Request $request) {
         $filepath = $request->input('filepath');
         $filename = $request->input('filename');
         $filetype = $request->input('filetype');
+        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'create')) {
+            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
+        }
         return RemoteFs::create($filepath, $filename, $filetype);
     }
 
     public function delete(Request $request) {
         $filepath = $request->input('filepath');
-        $response = RemoteFs::move($filepath, 'deleted_files');
-        $responsedata = json_decode($response->getContent());
-        if ($responsedata->type !== 'success') {
-            return $response;
+        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'delete')) {
+            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }
-        $changelog = new Changelog();
-        $changelog->createLog('delete', $filepath, Auth::user()->id);
-        return $response;
+        return RemoteFs::delete($filepath);
     }
 
     public function rename(Request $request) {
         $filepath = $request->input('filepath');
         $newfilename = $request->input('newfilename');
-
+        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'rename')) {
+            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
+        }
         return RemoteFs::rename($filepath, $newfilename);
     }
 
     public function upload(Request $request) {
         $filepath = $request->input('filepath');
         $file = $request->file('file');
-
+        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'upload')) {
+            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
+        }
         return RemoteFs::upload($filepath, $file);
     }
 
     public function download(Request $request) {
         $filepaths = $request->input('filepaths');
+        foreach ($filepaths as $filepath) {
+            if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'download')) {
+                return response()->json(['type' => 'error', 'content' => 'Permission denied']);
+            }
+        }
         return RemoteFs::download($filepaths);
     }
 }

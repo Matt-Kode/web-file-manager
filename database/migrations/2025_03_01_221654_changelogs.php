@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('filepath');
             $table->integer('done_by');
             $table->timestamp('done_at');
+            $table->integer('approved');
+            $table->integer('reviewed_by')->nullable();
             $table->longText('new_content')->nullable();
             $table->longText('old_content')->nullable();
         });
