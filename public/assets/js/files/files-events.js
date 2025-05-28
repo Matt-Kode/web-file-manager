@@ -1,5 +1,16 @@
+window.addEventListener('hashchange', (event) => {
+    if (!window.location.hash) {
+        window.location.hash = '/';
+    }
+    loadFiles();
+})
+
 window.addEventListener('load', (event) => {
-    loadFiles('/');
+    if (!window.location.hash) {
+        window.location.hash = '/';
+    } else {
+        loadFiles();
+    }
 });
 
 window.addEventListener('click', (event) => {

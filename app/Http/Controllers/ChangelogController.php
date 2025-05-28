@@ -29,13 +29,6 @@ class ChangelogController extends Controller
         return response()->json($data);
     }
 
-    public function index($changelogid) {
-            if (Changelog::find($changelogid)) {
-                return view('changelog');
-            }
-            abort(404);
-    }
-
     public function getChangelogDiff($changelogid) {
         $changelog = Changelog::find($changelogid);
         if (!$changelog || $changelog->action !== 'edit') {

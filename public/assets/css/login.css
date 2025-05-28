@@ -49,7 +49,7 @@ input[type="password"] {
     font-size: 14px;
     border: none;
     box-shadow: inset 0 0 0 1px #505050;
-    border-radius: 5px;
+    border-radius: 10px;
     color: #fff;
     outline: none;
 }
@@ -72,7 +72,7 @@ input[type="password"]:focus {
     padding: 12px;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-top: 30px;
     cursor: pointer;
     transition: background-color 0.3s ease;

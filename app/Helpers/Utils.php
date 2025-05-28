@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Group;
 use App\Models\Rule;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,15 +20,33 @@ function getLastFolder(String $currentpath) : String {
     }
     return $newfilepath;
 }
-function getPermForPathFromRule(String $filepath, String $action) : int  {
-    $userrules = Rule::where('user_id', Auth::user()->id)->orderBy('priority', 'DESC')->get();
-    if ($userrules->isEmpty()) {
+function getPermissionForPath(String $filepath, String $action) : int  {
+    $usergroup = Auth::user()->group_id;
+    if ($usergroup == null) {
         return 0;
     }
-    foreach ($userrules as $rule) {
-        if (str_starts_with($filepath, $rule->filepath)) {
-            return $rule->getAttribute($action) ?? 0;
+    $rules = Rule::where('group_id', $usergroup)->get();
+
+    if ($rules->isEmpty()) {
+        return 0;
+    }
+
+    foreach ($rules as $rule) {
+        if ($rule->filepath === $filepath && $rule->action === $action) {
+            return $rule->permission;
         }
     }
     return 0;
+
+
+//    $userrules = Rule::where('user_id', Auth::user()->id)->orderBy('priority', 'DESC')->get();
+//    if ($userrules->isEmpty()) {
+//        return 0;
+//    }
+//    foreach ($userrules as $rule) {
+//        if (str_starts_with($filepath, $rule->filepath)) {
+//            return $rule->getAttribute($action) ?? 0;
+//        }
+//    }
+//    return 0;
 }

@@ -36,7 +36,7 @@ async function create(filepathparam, filetypeparam, filenameparam) {
     });
     if (handleStatus(await response.json())) {
         closeModal();
-        await loadFiles(filepathparam);
+        await loadFiles();
     }
 }
 
@@ -54,7 +54,7 @@ async function deleteFile(filepathparam, handlestatus = true) {
         return await response.json();
     }
     handleStatus(await response.json(), true);
-    await loadFiles(lastFolder(filepathparam, true))
+    await loadFiles();
 }
 
 async function renameFile(filepathparam, newfilenameparam) {
@@ -69,7 +69,7 @@ async function renameFile(filepathparam, newfilenameparam) {
     });
     if (handleStatus(await response.json())) {
         closeModal();
-        await loadFiles(lastFolder(filepathparam, true));
+        await loadFiles();
     }
 }
 

@@ -17,7 +17,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     top: 10px;
-    z-index: 102;
+    z-index: 1000;
 }
 
 .notification-box {
@@ -53,12 +53,12 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.66);
     backdrop-filter: blur(10px);
-    z-index: 1000;
+    z-index: 999;
 }
 
 .modal {
     position: fixed;
-    border-radius: 5px;
+    border-radius: 10px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -112,7 +112,7 @@ body {
     border: none;
     box-shadow: inset 0 0 0 1px #505050;
     outline: none;
-    border-radius: 5px;
+    border-radius: 10px;
     width: 400px;
     padding: 10px;
     color: #fff;
@@ -129,6 +129,7 @@ body {
     display: flex;
     align-items: center;
     width: 100%;
+    gap: 10px;
 }
 
 .modal input[type=checkbox] {
@@ -164,41 +165,43 @@ body {
 }
 
 .modal .submit-btn {
-    border-radius: 5px;
+    border-radius: 10px;
     color: #fff;
     background-color: #3956ff;
     border: none;
-    padding: 10px 20px;
+    padding: 5px 20px;
 }
 
 .modal .cancel-btn {
-    border-radius: 5px;
+    border-radius: 10px;
     color: #fff;
     background-color: transparent;
-    box-shadow: inset 0 0 0 2px #3956ff;
     border: none;
-    padding: 10px 20px;
+    padding: 5px 20px;
 }
 
-.modal .submit-btn:hover,
-.modal .cancel-btn:hover {
+.modal .submit-btn:hover {
     background-color: #2243f8;
-    box-shadow: none;
 }
 
-.modal *{
+.modal .cancel-btn:hover {
+    background-color: #181818;
+}
+.modal * {
     display: block;
 }
 
 .context-menu {
-    background-color: transparent;
+    background-color: #1f1f1f;
+    padding: 5px;
     width: 100px;
     display: none;
+    gap: 10px;
     flex-direction: column;
     position: absolute;
-    border-radius: 5px;
+    border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #505050;
+    box-shadow: 0 0 10px 2px rgba(3, 3, 3, 0.2);
 }
 
 .context-menu.show {
@@ -206,18 +209,29 @@ body {
 }
 
 .context-menu button {
-    text-align: left;
+    border-radius: 10px;
+    text-align: center;
     display: block;
     border: none;
     outline: none;
-    padding: 10px;
+    padding: 5px 10px;
     color: #fff;
     width: 100%;
     background-color: #1f1f1f;
 }
 
-.context-menu button:hover {
-    background-color: #505050;
+.context-menu .delete-btn {
+    background-color: rgba(255, 80, 70, 0.22);
+    color: #ff5046;
+}
+
+.context-menu .delete-btn:hover {
+    color: #fff;
+    background-color: #ff5046;
+}
+
+.context-menu .reg-btn:hover {
+    background-color: #181818;
 }
 
 .btn-loader {
@@ -229,6 +243,24 @@ body {
     width: 16px;
     height: 16px;
     animation: spin 2s linear infinite;
+}
+
+.loader {
+    width: 100%;
+    display: none;
+    justify-content: center;
+    background-color: #1f1f1f;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.spinner {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {

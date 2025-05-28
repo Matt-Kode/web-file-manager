@@ -14,9 +14,13 @@ class DatabaseSeeder extends Seeder
     {
 
         DB::table('users')->insert([
-            'username' => 'darius',
+            'username' => 'root',
             'password' => Hash::make('password'),
             'is_admin' => 1
+        ]);
+
+        DB::table('groups')->insert([
+            'name' => 'mod-group'
         ]);
     }
 }

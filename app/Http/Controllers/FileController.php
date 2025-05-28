@@ -13,7 +13,7 @@ class FileController extends Controller
     public function get(Request $request)
     {
         $filepath = $request->input('filepath');
-        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'view')) {
+        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'view')) {
             return response()->json(['type' => 'no_permission']);
         }
         return RemoteFs::get($filepath);
@@ -22,7 +22,7 @@ class FileController extends Controller
     public function put(Request $request) {
         $filepath = $request->input('filepath');
         $content = $request->input('content');
-        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'edit')) {
+        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'edit')) {
             return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }
         if (Auth::user()->is_admin) {
@@ -49,7 +49,7 @@ class FileController extends Controller
         $filepath = $request->input('filepath');
         $filename = $request->input('filename');
         $filetype = $request->input('filetype');
-        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'create')) {
+        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'create')) {
             return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }
         return RemoteFs::create($filepath, $filename, $filetype);
@@ -57,7 +57,7 @@ class FileController extends Controller
 
     public function delete(Request $request) {
         $filepath = $request->input('filepath');
-        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'delete')) {
+        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'delete')) {
             return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }
         return RemoteFs::delete($filepath);
@@ -66,7 +66,7 @@ class FileController extends Controller
     public function rename(Request $request) {
         $filepath = $request->input('filepath');
         $newfilename = $request->input('newfilename');
-        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'rename')) {
+        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'rename')) {
             return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }
         return RemoteFs::rename($filepath, $newfilename);
@@ -75,7 +75,7 @@ class FileController extends Controller
     public function upload(Request $request) {
         $filepath = $request->input('filepath');
         $file = $request->file('file');
-        if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'upload')) {
+        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'upload')) {
             return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }
         return RemoteFs::upload($filepath, $file);
@@ -84,7 +84,7 @@ class FileController extends Controller
     public function download(Request $request) {
         $filepaths = $request->input('filepaths');
         foreach ($filepaths as $filepath) {
-            if (!Auth::user()->is_admin && !getPermForPathFromRule($filepath, 'download')) {
+            if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'download')) {
                 return response()->json(['type' => 'error', 'content' => 'Permission denied']);
             }
         }

@@ -3,20 +3,30 @@ const filescontainer = document.querySelector('.files-container');
 const filepathcontainer = document.querySelector('.file-path');
 const actionscontainer = document.querySelector('.actions');
 const optionscontainer = document.querySelector('.options');
-let editor = null;
+
+const editor = ace.edit("editor");
+editor.setTheme("ace/theme/twilight");
+
 const editorcontainer = document.querySelector(".editor-container");
 const fileinput = document.querySelector(".file-input");
 const folderinput = document.querySelector(".folder-input");
 const uploadcontainer = document.querySelector(".uploads-container");
 const checkedoptions = document.querySelector(".checked-options");
 const editoroptions = document.querySelector(".editor-options");
+const fileloader = document.querySelector(".loader");
 
 
-
-async function loadFiles(filepath) {
+function setFilePath(filepath) {
+    window.location.hash = filepath;
+}
+async function loadFiles() {
+    closeEditor();
+    let filepath = window.location.hash.slice(1).replaceAll('%20', ' ');
     table.innerHTML = '';
     checkedoptions.style.display = "none";
+    fileloader.style.display = 'flex';
     let data = await fetchFiles(filepath);
+    fileloader.style.display = 'none';
     if (data.type === 'dir' && data.content.length === 0) {
         loadActions(filepath);
         table.insertAdjacentHTML('beforeend', `<div class="empty-dir"><p>This directory is empty</p></div>`)
@@ -32,7 +42,7 @@ async function loadFiles(filepath) {
                 table.insertAdjacentHTML('beforeend', `
                 <tr data-filepath="${(filepath === '/' ? '' : filepath) + '/' + content[i].name}">
                     <td class="checkbox"><input type="checkbox" onchange="checkOptions(this)"></td>
-                    <td class="name" onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/directory.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
+                    <td class="name" onclick="setFilePath(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/directory.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
                     <td class="size"></td>
                     <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
                 </tr>`);
@@ -42,7 +52,7 @@ async function loadFiles(filepath) {
                 table.insertAdjacentHTML('beforeend', `
                 <tr data-filepath="${(filepath === '/' ? '' : filepath) + '/' + content[i].name}">
                     <td class="checkbox"><input type="checkbox" onchange="checkOptions(this)"></td>
-                    <td class="name" onclick="loadFiles(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/file.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
+                    <td class="name" onclick="setFilePath(this.parentElement.getAttribute('data-filepath'))"><img src="/assets/icons/file.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
                     <td class="size">${content[i].size}</td>
                     <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
                 </tr>`);
@@ -61,26 +71,25 @@ async function loadFiles(filepath) {
 }
 
 function loadEditor(filepath, filetype, content) {
-    editorcontainer.innerHTML = `<div id="editor"></div>`
-    editor = ace.edit("editor");
-    editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/" + filetype);
     editor.setValue(content);
-    editoroptions.style.display = 'flex';
     editoroptions.innerHTML = `
-    <button class="back-btn" onclick="closeEditor(); loadFiles(lastFolder('${filepath}', true))">
-        <span>Back</span>
+    <button class="back-btn" onclick="closeEditor(); setFilePath(lastFolder('${filepath}', false))">
+        <span>Exit</span>
     </button>
+    <span id="filename">${filepath.split('/').slice(-1)[0]}</span>
     <button class="save-btn" data-filepath="${filepath}" onclick="saveFile(this.getAttribute('data-filepath'))">
         <span>Save</span>
         <span class="btn-loader"></span>
     </button>`
+    editorcontainer.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
 }
 
 function closeEditor() {
-    editoroptions.style.display = 'none';
-    editorcontainer.innerHTML = '';
-    editor = null;
+    editorcontainer.style.display = 'none';
+    document.body.style.overflow = 'scroll'
 }
 
 function filePathLoader(filepath) {
@@ -88,10 +97,10 @@ function filePathLoader(filepath) {
     let files = filepath.split('/').filter(Boolean);
 
     if (files.length === 0) {
-        filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="/" onclick="loadFiles(this.getAttribute('data-filepath'))">root</button>`);
+        filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="/" onclick="setFilePath(this.getAttribute('data-filepath'))">root</button>`);
         return;
     }
-    filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="/" onclick="loadFiles(this.getAttribute('data-filepath'))">root</button><span>&nbsp;>&nbsp;</span>`);
+    filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="/" onclick="setFilePath(this.getAttribute('data-filepath'))">root</button><span>&nbsp;/&nbsp;</span>`);
     for (let i = 0; i<files.length; i++) {
         let currentfilepath = '';
         for (let j = 0; j<=i; j++) {
@@ -99,9 +108,9 @@ function filePathLoader(filepath) {
         }
         if (currentfilepath) {
             if (i+1 === files.length) {
-                filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="${currentfilepath}" onclick="loadFiles(this.getAttribute('data-filepath'))">${files[i]}</button>`);
+                filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="${currentfilepath}" onclick="setFilePath(this.getAttribute('data-filepath'))">${files[i]}</button>`);
             } else {
-                filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="${currentfilepath}" onclick="loadFiles(this.getAttribute('data-filepath'))">${files[i]}</button><span>&nbsp;>&nbsp;</span>`);
+                filepathcontainer.insertAdjacentHTML('beforeend', `<button data-filepath="${currentfilepath}" onclick="setFilePath(this.getAttribute('data-filepath'))">${files[i]}</button><span>&nbsp;/&nbsp;</span>`);
             }
         }
     }
@@ -171,8 +180,8 @@ function openCreateFileModal(filepath) {
             <h1>Create file</h1>
             <input type="text" name="filename" placeholder="File name">
             <div class="buttons">
-                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'file', document.querySelector('input[name=filename]').value)">Submit</button>
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
+                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'file', document.querySelector('input[name=filename]').value)">Submit</button>
             </div>
         </form>
     `)
@@ -184,8 +193,8 @@ function openCreateFolderModal(filepath) {
             <h1>Create folder</h1>
             <input type="text" name="filename" placeholder="Folder name">
             <div class="buttons">
-                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'dir', document.querySelector('input[name=filename]').value)">Submit</button>
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
+                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'dir', document.querySelector('input[name=filename]').value)">Submit</button>
             </div>
         </form>
     `)
@@ -197,8 +206,8 @@ function openDeleteModal(filepath) {
         <h1>Delete file</h1>
         <p>Are you sure you want to delete this file?</p>
         <div class="buttons">
-            <button class="submit-btn" onclick="deleteFile('${filepath}')">Delete</button>
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            <button class="submit-btn" onclick="deleteFile('${filepath}')">Delete</button>
         </div>
     `)
     } else {
@@ -206,8 +215,8 @@ function openDeleteModal(filepath) {
         <h1>Delete file</h1>
         <p>Are you sure you want to delete ${document.querySelectorAll(".checkbox input:checked").length} file(s)?</p>
         <div class="buttons">
-            <button class="submit-btn" onclick="deleteCheckedFiles()">Delete</button>
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            <button class="submit-btn" onclick="deleteCheckedFiles()">Delete</button>
         </div>
     `)
     }
@@ -223,7 +232,7 @@ async function deleteCheckedFiles() {
         }
     }
     if (successfuldeletions > 0) {
-        await loadFiles(lastFolder(checkedelements[0].parentElement.parentElement.getAttribute('data-filepath'), true));
+        await setFilePath(lastFolder(checkedelements[0].parentElement.parentElement.getAttribute('data-filepath'), true));
     }
 }
 
@@ -233,8 +242,8 @@ function openRenameModal(filepath) {
             <h1>Rename file</h1>
             <input type="text" name="filename" placeholder="New name" value="">
             <div class="buttons">
-                <button class="submit-btn" type="submit" onclick="renameFile('${filepath}', document.querySelector('input[name=filename]').value)">Submit</button>
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
+                <button class="submit-btn" type="submit" onclick="renameFile('${filepath}', document.querySelector('input[name=filename]').value)">Submit</button>
             </div>
         </form>
     `)

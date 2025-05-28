@@ -4,29 +4,35 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Rule;
-use App\Models\User;
-use http\Env\Response;
+use Illuminate\Http\Request;
 
 class RulesController extends Controller
 {
-
-    public function index($userid) {
-        if (User::find($userid)) {
-            return view('rules');
-        }
-        abort(404);
-    }
-    public function get($userid) {
-        return response()->json(Rule::where('user_id', $userid)->get());
+    public function get(Request $request) {
+        $groupid = $request->input('group_id');
+        return response()->json(Rule::where('group_id', $groupid)->orderBy('priority', 'desc')->get());
     }
 
-    public function create(Request $request, $userid) {
+    public function create(Request $request) {
         $filepath = $request->input('filepath');
-        $priority = $request->input('priority');
+        $groupid = $request->input('group_id');
+        $priority = (int) $request->input('priority');
         $permissions = $request->input('permissions');
 
+        if ($filepath === null) {
+            return response()->json(['type' => 'error', 'content' => 'Filepath is required']);
+        }
+
+        if ($priority === null) {
+            $priority = 0;
+        }
+
+        if ($groupid === null) {
+            return response()->json(['type' => 'error', 'content' => 'Couldn\'t find group id']);
+        }
+
         $rule = new Rule;
-        $rule->user_id = $userid;
+        $rule->group_id = $groupid;
         $rule->filepath = $filepath;
         $rule->priority = $priority;
         $rule->view = $permissions['view'];
@@ -36,7 +42,12 @@ class RulesController extends Controller
         $rule->download = $permissions['download'];
         $rule->upload = $permissions['upload'];
         $rule->delete = $permissions['delete'];
-        $rule->save();
+
+        if ($rule->save()) {
+            return response()->json(['type' => 'success', 'content' => 'Rule created successfully']);
+        }
+
+        return response()->json(['type' => 'error', 'content' => 'Something went wrong']);
     }
 
     public function edit(Request $request) {

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->integer('group_id')->nullable();
-            $table->integer('is_admin');
+        Schema::create('groups', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('discord_role_id')->nullable();
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('groups');
     }
 };

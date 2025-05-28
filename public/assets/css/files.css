@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 .files-container {
     margin-right: auto;
     margin-left: auto;
@@ -83,7 +82,7 @@ table tbody td:last-child {
 }
 
 table tbody tr:hover {
-    background-color: #505050;
+    background-color: #181818;
 }
 
 table tbody tr .checkbox input {
@@ -91,7 +90,7 @@ table tbody tr .checkbox input {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    border: 1px solid #868686;
+    border: 1px solid #505050;
     border-radius: 5px;
     background-color: transparent;
 }
@@ -100,57 +99,6 @@ table tbody tr .checkbox input:checked {
     content: url("/assets/icons/checkmark.svg");
     background-color: #3956ff;
     border-color: #3956ff;
-}
-
-.editor-container {
-    border-radius: 10px;
-}
-
-#editor {
-    position: absolute;
-    height: calc(100vh - 75px);
-    width: 100%;
-    font-family: "Roboto Mono", "Courier New";
-    font-size: 12px;
-    z-index: 99;
-}
-
-.editor-options {
-    position: fixed;
-    display: none;
-    align-items: center;
-    gap: 10px;
-    background-color: #1f1f1f;
-    z-index: 100;
-    right: 20px;
-    bottom: 25px;
-    padding: 25px;
-    border-radius: 5px;
-    border: 1px solid #505050;
-}
-
-.back-btn {
-    color: #fff;
-    background-color: transparent;
-    text-decoration: underline;
-    border: none;
-    outline: none;
-    cursor: pointer;
-}
-
-.editor-options .save-btn {
-
-}
-
-.options {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 10px;
-    background-color: #1f1f1f;
-    padding: 20px 20px;
-    border-radius: 10px;
-    justify-content: space-between;
 }
 
 .file-path button {
@@ -167,21 +115,6 @@ table tbody tr .checkbox input:checked {
 
 .file-path span {
     color: white;
-    font-size: 15px;
-}
-
-.save-btn {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    border-radius: 5px;
-    float: right;
-    outline: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-family: "Poppins", sans-serif;
-    background-color: #3956ff;
 }
 
 .empty-dir {
@@ -205,10 +138,10 @@ table tbody tr .checkbox input:checked {
     gap: 10px;
 }
 .actions button {
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: #3956ff;
     color: white;
-    padding: 10px 20px;
+    padding: 5px 20px;
     border: none;
     cursor: pointer;
 }
@@ -234,27 +167,31 @@ table tbody tr .checkbox input:checked {
 .create-options,
 .upload-options {
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-top: 5px;
+    gap: 10px;
+    padding: 5px;
+    flex-direction: column;
     display: none;
     position: absolute;
-    background-color: transparent;
+    background-color: #3956ff;
     width: 100%;
     z-index: 1;
 }
 
 .create-options button,
 .upload-options button {
-    border-radius: 0;
+    border-radius: 10px;
     width: 100%;
-    text-align: left;
-    padding: 10px 20px;
+    text-align: center;
+    padding: 5px 20px;
     display: block;
+    background-color: transparent;
 }
 
 .create-dropdown.show .create-options,
 .upload-dropdown.show .upload-options {
-    display: block;
+    display: flex;
 }
 
 .create-dropdown.show .create-btn img,
@@ -264,16 +201,16 @@ table tbody tr .checkbox input:checked {
 
 .uploads-container {
     display: none;
-    border: 1px solid #505050;
     flex-direction: column;
     gap: 5px;
     position: fixed;
     right: 20px;
     bottom: 25px;
     background-color: #1f1f1f;
+    box-shadow: 0 0 10px 2px rgba(3, 3, 3, 0.2);
     height: fit-content;
     width: 400px;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px;
 }
 
@@ -309,17 +246,21 @@ table tbody tr .checkbox input:checked {
     left: 50%;
     transform: translateX(-50%);
     padding: 25px;
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: #1f1f1f;
-    border: 1px solid #505050;
+    box-shadow: 0 0 10px 2px rgba(3, 3, 3, 0.2);
 }
 
 .checked-options button {
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: #3956ff;
     color: white;
-    padding: 10px 20px;
+    padding: 5px 20px;
     border: none;
     cursor: pointer;
+}
+
+.checked-options button:hover {
+    background-color: #2243f8;
 }
 

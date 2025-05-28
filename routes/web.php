@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\RulesController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthAdmin;
@@ -31,7 +32,6 @@ Route::get('/files', function () {return view('files');})->middleware(AuthUser::
 Route::group(['prefix' => '/changelogs'], function () {
     Route::get('/', function () {return view('changelogs');})->middleware(AuthUser::class)->name('changelogs');
     Route::post('/', [ChangelogController::class, 'get'])->middleware(AuthUserRemote::class)->name('changelogs.get');
-    Route::get('/{id}', [ChangelogController::class, 'index'])->middleware(AuthUser::class)->name('changelogs.view');
     Route::post('/{id}', [ChangelogController::class, 'getChangelogDiff'])->middleware(AuthUserRemote::class)->name('changelogs.get.diff');
     Route::post('/{id}/accept', [ChangelogController::class, 'acceptEdit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.revertedit');
     Route::post('/{id}/reject', [ChangelogController::class, 'rejectEdit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.revertdeletion');
@@ -42,9 +42,15 @@ Route::group(['prefix' => '/users'], function () {
     Route::post('/', [UserController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.get');
     Route::post('/add', [UserController::class, 'add'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.add');
     Route::post('/update', [UserController::class, 'update'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.update');
-    Route::get('/{id}/rules', [RulesController::class, 'index'])->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('users.rules');
-    Route::post('/{id}/rules', [RulesController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.rules.get');
-    Route::post('/{id}/rules/create', [RulesController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.rules.create');
+});
+
+Route::group(['prefix' => '/groups'], function () {
+    Route::get('/', function () {return view('groups');})->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('groups');
+    Route::post('/', [GroupsController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.get');
+    Route::post('/edit', [GroupsController::class, 'edit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.edit');
+    Route::post('/create', [GroupsController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.create');
+    Route::post('/rules', [RulesController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.rules.get');
+    Route::post('/rules/create', [RulesController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.rules.create');
 });
 
 Route::group(['prefix' => '/remote', 'middleware' => [AuthUserRemote::class, VerifyCsrf::class]], function() {

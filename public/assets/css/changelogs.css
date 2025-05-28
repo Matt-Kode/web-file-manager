@@ -3,6 +3,9 @@
     margin-left: auto;
     margin-top: 40px;
     width: 900px;
+}
+
+.changelogs {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -18,13 +21,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 25px;
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: #1f1f1f;
     width: 100%;
     color: #fff;
 }
 
-.changelog .desc {
+.changelog .path {
     font-size: 14px;
 }
 
@@ -33,17 +36,40 @@
 }
 
 .changelog button {
-    background-color: #ff5046;
-    color: #fff;
-    border-radius: 5px;
+    justify-content: center;
     outline: none;
+    border: none;
     display: flex;
     align-items: center;
-    border: none;
-    padding: 10px;
+    width: 80px;
+    background-color: #3956ff;
+    border-radius: 10px;
+    padding: 5px;
+    color: #fff;
     cursor: pointer;
 }
 
 .changelog button:hover {
-    background-color: #fd4138;
+    background-color: #2243f8;
 }
+
+.changelog .desc {
+    width: 50%;
+}
+
+.changelog .status {
+    width: 30%;
+}
+
+.changelog .approved {
+    color: #5bc25b;
+}
+
+.changelog .rejected {
+    color: #ff5046;
+}
+
+.changelog .pending {
+    color: #fcb625;
+}
+
