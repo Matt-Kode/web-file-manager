@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Changelog extends Model
@@ -11,6 +12,7 @@ class Changelog extends Model
         $this->action = $action;
         $this->filepath = $filepath;
         $this->done_by = $done_by;
+        $this->done_at = Carbon::now();
         if ($action === 'edit') {
             $this->old_content = $old_content;
             $this->new_content = $new_content;

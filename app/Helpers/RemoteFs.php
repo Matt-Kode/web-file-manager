@@ -10,10 +10,10 @@ Class RemoteFs {
 
     const REMOTE_URL = "http://site2.localhost";
 
-    public static function put(String $filepath, $content, $old_content = []) {
+    public static function put(String $filepath, $content) {
         return self::httpRequestAction('edit', '/put.php',
             ['content-type' => 'application/json'],
-            ['filepath' => $filepath, 'content' => $content] + $old_content);
+            ['filepath' => $filepath, 'content' => $content]);
     }
     public static function download(array $filepaths) {
         return self::httpRequestAction('download', '/download.php',

@@ -35,22 +35,29 @@ Route::group(['prefix' => '/changelogs'], function () {
     Route::post('/{id}', [ChangelogController::class, 'getChangelogDiff'])->middleware(AuthUserRemote::class)->name('changelogs.get.diff');
     Route::post('/{id}/accept', [ChangelogController::class, 'acceptEdit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.revertedit');
     Route::post('/{id}/reject', [ChangelogController::class, 'rejectEdit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.revertdeletion');
+    Route::post('/conflict/save', [ChangelogController::class, 'saveConflict'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('changelogs.saveconflict');
+
 });
 
 Route::group(['prefix' => '/users'], function () {
     Route::get('/', function () {return view('users');})->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('users');
     Route::post('/', [UserController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.get');
-    Route::post('/add', [UserController::class, 'add'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.add');
+    Route::post('/create', [UserController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.create');
     Route::post('/update', [UserController::class, 'update'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.update');
+    Route::post('/delete', [UserController::class, 'delete'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('users.delete');
 });
 
 Route::group(['prefix' => '/groups'], function () {
     Route::get('/', function () {return view('groups');})->middleware(AuthUser::class)->middleware(AuthAdmin::class)->name('groups');
     Route::post('/', [GroupsController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.get');
-    Route::post('/edit', [GroupsController::class, 'edit'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.edit');
+    Route::post('/update', [GroupsController::class, 'update'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.update');
     Route::post('/create', [GroupsController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.create');
+    Route::post('/delete', [GroupsController::class, 'delete'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.delete');
     Route::post('/rules', [RulesController::class, 'get'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.rules.get');
     Route::post('/rules/create', [RulesController::class, 'create'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.rules.create');
+    Route::post('/rules/update', [RulesController::class, 'update'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.rules.update');
+    Route::post('/rules/delete', [RulesController::class, 'delete'])->middleware(AuthUserRemote::class)->middleware(AuthAdminRemote::class)->name('groups.rules.delete');
+
 });
 
 Route::group(['prefix' => '/remote', 'middleware' => [AuthUserRemote::class, VerifyCsrf::class]], function() {

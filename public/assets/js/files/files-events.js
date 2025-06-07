@@ -1,8 +1,9 @@
 window.addEventListener('hashchange', (event) => {
     if (!window.location.hash) {
         window.location.hash = '/';
+    } else {
+        loadFiles();
     }
-    loadFiles();
 })
 
 window.addEventListener('load', (event) => {

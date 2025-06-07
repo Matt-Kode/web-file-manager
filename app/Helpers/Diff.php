@@ -1,5 +1,7 @@
 <?php
 namespace App\Helpers;
+use Illuminate\Support\Facades\Log;
+
 class Diff
 {
 
@@ -12,7 +14,7 @@ class Diff
         $this->new_content = $new_content;
     }
 
-    public function run()
+    public function run($conflict = false)
     {
         $lcs = $this->longestCommonSubsequence();
         $old_content_lines = explode("\n", $this->old_content);
@@ -48,13 +50,88 @@ class Diff
             }
             $total_line_count++;
         }
+
+        if ($conflict) {
+            return $this->formatConflictString($diff['removed_lines'], $diff['added_lines'], $diff['all_lines']);
+        }
+
         $diff['all_lines'] = implode("\n", $diff['all_lines']);
         return $diff;
     }
 
-    public function patch()
-    {
+//    private function formatConflictString($removed_line_nums, $new_line_nums, $total_lines) {
+//        $start_removed = true;
+//        $last_line_num_removed = 0;
+//        for ($i = 0; $i < count($removed_line_nums); $i++) {
+//            if ($start_removed) {
+//                $total_lines[$removed_line_nums[$i]] = "<<<<<<<<<<\n" . $total_lines[$removed_line_nums[$i]];
+//                $start_removed = false;
+//            } elseif ($last_line_num_removed != $removed_line_nums[$i] - 1) {
+//                $total_lines[$last_line_num_removed] = $total_lines[$last_line_num_removed] . "\n>>>>>>>>>> CURRENT";
+//                $start_removed = true;
+//            }
+//            if ($i + 1 == count($removed_line_nums) && !$start_removed) {
+//                $total_lines[$last_line_num_removed] = $total_lines[$last_line_num_removed] . "\n>>>>>>>>>> CURRENT";
+//            }
+//            $last_line_num_removed = $removed_line_nums[$i];
+//        }
+//
+//        $start_new = true;
+//        $last_line_num_new = 0;
+//        for ($i = 0; $i < count($new_line_nums); $i++) {
+//            if ($start_new) {
+//                $total_lines[$new_line_nums[$i]] = "<<<<<<<<<<\n" . $total_lines[$new_line_nums[$i]];
+//                $start_new = false;
+//            } elseif ($last_line_num_new != $new_line_nums[$i] - 1) {
+//                $total_lines[$last_line_num_new] = $total_lines[$last_line_num_new] . "\n>>>>>>>>>> NEW";
+//                $start_new = true;
+//            }
+//            if ($i + 1 == count($new_line_nums) && !$start_new) {
+//                $total_lines[$last_line_num_new] = $total_lines[$last_line_num_new] . "\n>>>>>>>>>> NEW";
+//            }
+//            $last_line_num_new = $new_line_nums[$i];
+//        }
+//
+//        return implode("\n", $total_lines);
+//    }
 
+    private function formatConflictString($removed_line_nums, $new_line_nums, $total_lines) {
+        $conflict_open = false;
+
+        for ($i = 0; $i < count($removed_line_nums); $i++) {
+            $current = $removed_line_nums[$i];
+            $prev = $i > 0 ? $removed_line_nums[$i - 1] : null;
+
+            if (!$conflict_open || $prev === null || $current !== $prev + 1) {
+                $total_lines[$current] = "<<<<<<<<<<\n" . ($total_lines[$current] ?? '');
+                $conflict_open = true;
+            }
+
+            $next = $i + 1 < count($removed_line_nums) ? $removed_line_nums[$i + 1] : null;
+            if ($next === null || $next !== $current + 1) {
+                $total_lines[$current] .= "\n>>>>>>>>>> CURRENT";
+                $conflict_open = false;
+            }
+        }
+
+        $conflict_open = false;
+        for ($i = 0; $i < count($new_line_nums); $i++) {
+            $current = $new_line_nums[$i];
+            $prev = $i > 0 ? $new_line_nums[$i - 1] : null;
+
+            if (!$conflict_open || $prev === null || $current !== $prev + 1) {
+                $total_lines[$current] = "<<<<<<<<<<\n" . ($total_lines[$current] ?? '');
+                $conflict_open = true;
+            }
+
+            $next = $i + 1 < count($new_line_nums) ? $new_line_nums[$i + 1] : null;
+            if ($next === null || $next !== $current + 1) {
+                $total_lines[$current] .= "\n>>>>>>>>>> NEW";
+                $conflict_open = false;
+            }
+        }
+
+        return implode("\n", $total_lines);
     }
 
     private function longestCommonSubsequence()

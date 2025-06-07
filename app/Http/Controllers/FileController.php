@@ -22,10 +22,8 @@ class FileController extends Controller
     public function put(Request $request) {
         $filepath = $request->input('filepath');
         $content = $request->input('content');
-        if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'edit')) {
-            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
-        }
-        if (Auth::user()->is_admin) {
+
+        if (Auth::user()->is_admin || getPermissionForPath($filepath, 'edit')) {
             $changelog = new Changelog();
             $response = RemoteFs::put($filepath, $content);
             $responsedata = json_decode($response->getContent());
@@ -57,6 +55,10 @@ class FileController extends Controller
 
     public function delete(Request $request) {
         $filepath = $request->input('filepath');
+        $changelogs = Changelog::where('filepath', $filepath)->get();
+        foreach ($changelogs as $changelog) {
+            $changelog->delete();
+        }
         if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'delete')) {
             return response()->json(['type' => 'error', 'content' => 'Permission denied']);
         }

@@ -50,7 +50,46 @@ class RulesController extends Controller
         return response()->json(['type' => 'error', 'content' => 'Something went wrong']);
     }
 
-    public function edit(Request $request) {
+    public function update(Request $request) {
+        $ruleid = $request->input('rule_id');
+        $filepath = $request->input('filepath');
+        $priority = (int) $request->input('priority');
+        $permissions = $request->input('permissions');
 
+        if ($filepath === null) {
+            return response()->json(['type' => 'error', 'content' => 'Filepath is required']);
+        }
+
+        if ($priority === null) {
+            $priority = 0;
+        }
+
+        $rule = Rule::find($ruleid);
+        if ($rule === null) {
+            return response()->json(['type' => 'error', 'content' => 'Rule not found']);
+        }
+        $rule->filepath = $filepath;
+        $rule->priority = $priority;
+        $rule->view = $permissions['view'];
+        $rule->edit = $permissions['edit'];
+        $rule->create = $permissions['create'];
+        $rule->rename = $permissions['rename'];
+        $rule->download = $permissions['download'];
+        $rule->upload = $permissions['upload'];
+        $rule->delete = $permissions['delete'];
+
+        if ($rule->save()) {
+            return response()->json(['type' => 'success', 'content' => 'Rule updated successfully']);
+        }
+
+        return response()->json(['type' => 'error', 'content' => 'Something went wrong']);
+    }
+
+    public function delete(Request $request) {
+        $ruleid = $request->input('rule_id');
+
+        Rule::destroy($ruleid);
+
+        return response()->json(['type' => 'success', 'content' => 'Rule deleted successfully']);
     }
 }

@@ -10,8 +10,8 @@ async function  fetchFiles(filepathparam) {
     return await response.json();
 }
 
-async function saveFile(filepathparam) {
-    let loader = document.querySelector(".btn-loader");
+async function saveFile(button, filepathparam) {
+    let loader = button.querySelector(".btn-loader");
     loader.style.display = 'inline-block';
     let response = await fetch('/remote/put', {
         method: "POST",
@@ -51,6 +51,7 @@ async function deleteFile(filepathparam, handlestatus = true) {
         body: JSON.stringify({filepath: filepathparam})
     });
     if (!handlestatus) {
+        await loadFiles();
         return await response.json();
     }
     handleStatus(await response.json(), true);

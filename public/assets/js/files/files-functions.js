@@ -57,12 +57,26 @@ async function loadFiles() {
                     <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
                 </tr>`);
             }
+            if (content[i].type === 'not_viewable') {
+                table.insertAdjacentHTML('beforeend', `
+                <tr data-filepath="${(filepath === '/' ? '' : filepath) + '/' + content[i].name}">
+                    <td class="checkbox"><input type="checkbox" onchange="checkOptions(this)"></td>
+                    <td class="name"><img src="/assets/icons/file.svg">&nbsp;&nbsp;<p>${content[i].name}</p></td>
+                    <td class="size">${content[i].size}</td>
+                    <td class="menu"><button class="context-menu-btn"><img src="/assets/icons/menu.svg"></button></td>
+                </tr>`);
+            }
         }
         filePathLoader(filepath);
         return;
     }
     if (data.type === 'file') {
-        loadEditor(filepath, data.extension, data.content);
+        loadEditor(filepath, fileExtension(filepath.split('/').splice(-1)[0]), data.content);
+        return;
+    }
+    if (data.type === 'not_viewable') {
+        setFilePath(lastFolder(filepath));
+        displayNotification('Cannot view that file', 'error')
         return;
     }
     if (data.type === 'error') {
@@ -78,7 +92,7 @@ function loadEditor(filepath, filetype, content) {
         <span>Exit</span>
     </button>
     <span id="filename">${filepath.split('/').slice(-1)[0]}</span>
-    <button class="save-btn" data-filepath="${filepath}" onclick="saveFile(this.getAttribute('data-filepath'))">
+    <button class="save-btn" data-filepath="${filepath}" onclick="saveFile(this ,this.getAttribute('data-filepath'))">
         <span>Save</span>
         <span class="btn-loader"></span>
     </button>`
@@ -236,11 +250,11 @@ async function deleteCheckedFiles() {
     }
 }
 
-function openRenameModal(filepath) {
+function openRenameModal(filepath, filename) {
     openModal(`
         <form>
             <h1>Rename file</h1>
-            <input type="text" name="filename" placeholder="New name" value="">
+            <input type="text" name="filename" placeholder="New name" value="${filename}">
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 <button class="submit-btn" type="submit" onclick="renameFile('${filepath}', document.querySelector('input[name=filename]').value)">Submit</button>
@@ -270,7 +284,7 @@ function lastFolder(filepath, appendroot) {
     return newfilepath;
 }
 
-async function initDownload(filepath) {
+async function initDownload(filepath, button = null) {
     if (filepath) {
         await downloadFile([filepath]);
     } else {
@@ -280,8 +294,13 @@ async function initDownload(filepath) {
         for (let cb of checkedelements) {
             filepaths.push(cb.parentElement.parentElement.getAttribute('data-filepath'));
         }
-
+        if (button !== null) {
+            button.querySelector('.btn-loader').style.display = 'inline-block';
+        }
         await downloadFile(filepaths);
+        if (button !== null) {
+            button.querySelector('.btn-loader').style.display = 'none';
+        }
     }
 }
 

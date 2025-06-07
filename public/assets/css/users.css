@@ -28,7 +28,7 @@
 }
 
 .user button {
-    background-color: #ff5046;
+    background-color: #3956ff;
     color: #fff;
     border-radius: 10px;
     outline: none;
@@ -43,6 +43,15 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+
+.actions button:hover {
+    background-color: #2243f8;
+}
+
+#delete-btn:hover {
+    color: #fff;
+    background-color: #ff5046;
 }
 
 .options {
@@ -64,4 +73,9 @@
 
 .options button:hover {
     background-color: #2243f8;
+}
+
+#delete-btn {
+    background-color: rgba(255, 80, 70, 0.22);
+    color: #ff5046;
 }

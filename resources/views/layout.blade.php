@@ -100,6 +100,30 @@
     function displayButtonLoader(btn, bool) {
         btn.getElementById('btn-loader').style.display = bool ? 'inline-block' : 'none';
     }
+
+    function fileExtension(filename) {
+        let extension = filename.split('.').splice(-1)[0];
+        switch (extension) {
+            case 'yml':
+                return 'yaml';
+            case 'json':
+                return 'json';
+            case 'js':
+                return 'javascript';
+            case 'php':
+                return 'php';
+            case 'py':
+                return 'python';
+            case 'java':
+                return 'java';
+            case 'css':
+                return 'css';
+            case 'html':
+                return 'html';
+            default:
+                return 'text';
+        }
+    }
 </script>
 @stack('scripts')
 </html>

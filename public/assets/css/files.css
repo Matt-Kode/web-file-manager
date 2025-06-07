@@ -258,6 +258,8 @@ table tbody tr .checkbox input:checked {
     padding: 5px 20px;
     border: none;
     cursor: pointer;
+    display: flex;
+    align-content: center;
 }
 
 .checked-options button:hover {

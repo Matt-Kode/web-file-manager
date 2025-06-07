@@ -20,33 +20,37 @@ function getLastFolder(String $currentpath) : String {
     }
     return $newfilepath;
 }
-function getPermissionForPath(String $filepath, String $action) : int  {
+function getPermissionForPath(String $filepath, String $action) : int
+{
     $usergroup = Auth::user()->group_id;
     if ($usergroup == null) {
         return 0;
     }
-    $rules = Rule::where('group_id', $usergroup)->get();
+    $rules = Rule::where('group_id', $usergroup)->orderBy('priority', 'desc')->get();
 
     if ($rules->isEmpty()) {
         return 0;
     }
 
     foreach ($rules as $rule) {
-        if ($rule->filepath === $filepath && $rule->action === $action) {
-            return $rule->permission;
+        if (str_starts_with($filepath, $rule->filepath)) {
+            switch ($action) {
+                case $action === 'view':
+                    return $rule->view;
+                case $action === 'edit':
+                    return $rule->edit;
+                case $action === 'delete':
+                    return $rule->delete;
+                case $action === 'create':
+                    return $rule->create;
+                case $action === 'upload':
+                    return $rule->upload;
+                case $action === 'download':
+                    return $rule->download;
+                case $action === 'rename':
+                    return $rule->rename;
+            }
         }
     }
     return 0;
-
-
-//    $userrules = Rule::where('user_id', Auth::user()->id)->orderBy('priority', 'DESC')->get();
-//    if ($userrules->isEmpty()) {
-//        return 0;
-//    }
-//    foreach ($userrules as $rule) {
-//        if (str_starts_with($filepath, $rule->filepath)) {
-//            return $rule->getAttribute($action) ?? 0;
-//        }
-//    }
-//    return 0;
 }
