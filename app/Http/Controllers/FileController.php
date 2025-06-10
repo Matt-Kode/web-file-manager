@@ -78,7 +78,7 @@ class FileController extends Controller
         $filepath = $request->input('filepath');
         $file = $request->file('file');
         if (!Auth::user()->is_admin && !getPermissionForPath($filepath, 'upload')) {
-            return response()->json(['type' => 'error', 'content' => 'Permission denied']);
+            return response()->json(['type' => 'no_permission']);
         }
         return RemoteFs::upload($filepath, $file);
     }

@@ -12,6 +12,7 @@ window.addEventListener('submit', (e) => {
 async function attemptLogin(name, pass) {
 
     btnloader.style.display = 'inline-block';
+    disableButtons(true);
     let response = await fetch('/authenticate', {
         method: "POST",
         headers: {
@@ -20,7 +21,6 @@ async function attemptLogin(name, pass) {
         },
         body: JSON.stringify({username: name, password: pass})
     });
-
     let data = await response.json();
 
     if (response.status === 200) {
@@ -33,6 +33,8 @@ async function attemptLogin(name, pass) {
         btnloader.style = '';
         displayError(data.error, error_count);
     }
+
+    disableButtons(false);
 
 }
 

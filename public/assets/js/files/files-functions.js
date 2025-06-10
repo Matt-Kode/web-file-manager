@@ -79,6 +79,12 @@ async function loadFiles() {
         displayNotification('Cannot view that file', 'error')
         return;
     }
+    if (data.type === 'no_permission') {
+        loadActions(filepath);
+        table.insertAdjacentHTML('beforeend', `<div class="empty-dir"><p>No permission to view</p></div>`)
+        filePathLoader(filepath);
+        return;
+    }
     if (data.type === 'error') {
         displayNotification(data.content, 'error');
     }
@@ -133,12 +139,13 @@ function filePathLoader(filepath) {
 function displayUpload(currentstatus, filesuploaded, filestotal) {
     if (currentstatus === "complete") {
         uploadcontainer.style = '';
+        return;
     }
     if (currentstatus === "in_progress") {
-        let percent = (filesuploaded / filestotal) * 100;
-        uploadcontainer.style.display = 'flex';
-        uploadcontainer.querySelector("p").textContent = `${filesuploaded} of ${filestotal} uploaded`;
-        uploadcontainer.querySelector(".progress-bar").style.width = percent + "%";
+            let percent = (filesuploaded / filestotal) * 100;
+            uploadcontainer.style.display = 'flex';
+            uploadcontainer.querySelector("p").textContent = `${filesuploaded} of ${filestotal} uploaded`;
+            uploadcontainer.querySelector(".progress-bar").style.width = percent + "%";
     }
 }
 
@@ -195,7 +202,7 @@ function openCreateFileModal(filepath) {
             <input type="text" name="filename" placeholder="File name">
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'file', document.querySelector('input[name=filename]').value)">Submit</button>
+                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'file', document.querySelector('input[name=filename]').value, this)"><span>Create</span><span class="btn-loader"></span></button>
             </div>
         </form>
     `)
@@ -208,7 +215,7 @@ function openCreateFolderModal(filepath) {
             <input type="text" name="filename" placeholder="Folder name">
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'dir', document.querySelector('input[name=filename]').value)">Submit</button>
+                <button class="submit-btn" type="submit" onclick="create('${filepath}', 'dir', document.querySelector('input[name=filename]').value, this)"><span>Create</span><span class="btn-loader"></span></button>
             </div>
         </form>
     `)
@@ -221,7 +228,7 @@ function openDeleteModal(filepath) {
         <p>Are you sure you want to delete this file?</p>
         <div class="buttons">
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            <button class="submit-btn" onclick="deleteFile('${filepath}')">Delete</button>
+            <button class="submit-btn" onclick="deleteFile('${filepath}', this)"><span>Delete</span><span class="btn-loader"></span></button>
         </div>
     `)
     } else {
@@ -230,23 +237,27 @@ function openDeleteModal(filepath) {
         <p>Are you sure you want to delete ${document.querySelectorAll(".checkbox input:checked").length} file(s)?</p>
         <div class="buttons">
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            <button class="submit-btn" onclick="deleteCheckedFiles()">Delete</button>
+            <button class="submit-btn" onclick="deleteCheckedFiles(this)"><span>Delete</span><span class="btn-loader"></span></button>
         </div>
     `)
     }
 }
 
-async function deleteCheckedFiles() {
+async function deleteCheckedFiles(button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let checkedelements = document.querySelectorAll(".checkbox input:checked");
     let successfuldeletions = 0;
     for (let cb of checkedelements) {
-        let responsejson = await deleteFile(cb.parentElement.parentElement.getAttribute('data-filepath'), false);
+        let responsejson = await deleteFile(cb.parentElement.parentElement.getAttribute('data-filepath'), null, false);
         if (handleStatus(responsejson, true)) {
             successfuldeletions++;
+            console.log('wqokinh');
         }
     }
+    button.querySelector('.btn-loader').style.display = 'none';
+    closeModal();
     if (successfuldeletions > 0) {
-        await setFilePath(lastFolder(checkedelements[0].parentElement.parentElement.getAttribute('data-filepath'), true));
+        await loadFiles();
     }
 }
 
@@ -257,7 +268,7 @@ function openRenameModal(filepath, filename) {
             <input type="text" name="filename" placeholder="New name" value="${filename}">
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit" onclick="renameFile('${filepath}', document.querySelector('input[name=filename]').value)">Submit</button>
+                <button class="submit-btn" type="submit" onclick="renameFile('${filepath}', document.querySelector('input[name=filename]').value, this)"><span>Rename</span><span class="btn-loader"></span></button>
             </div>
         </form>
     `)

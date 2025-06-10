@@ -31,7 +31,7 @@ function openAddUserModal() {
             </div>`}
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                ${!rootuser ? `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, 0)">Save</button>` : `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, document.querySelector('input[name=group-name]').value)">Save</button>`}
+                ${!rootuser ? `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, 0, this)"><span>Add</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, document.querySelector('input[name=group-name]').value, this)"><span>Add</span><span class="btn-loader"></span></button>`}
             </div>
     `);
 }
@@ -53,7 +53,7 @@ async function openEditUserModal(username, is_admin, userid, group_id, button) {
             </div>`}
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                ${!rootuser || userid === 1 ? `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, ${is_admin}, ${userid})">Save</button>` : `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, ${userid}, document.querySelector('input[name=group-name]').value)">Save</button>`}
+                ${!rootuser || userid === 1 ? `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, ${is_admin}, ${userid}, this)"><span>Save</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, ${userid}, document.querySelector('input[name=group-name]').value, this)"><span>Save</span><span class="btn-loader"></span></button>`}
             </div>
     `);
 }
@@ -64,7 +64,7 @@ function openDeleteUserModal(userid) {
         <p>Are you sure you want to delete this user?</p>
         <div class="buttons">
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            <button class="submit-btn" onclick="deleteUser(${userid})">Delete</button>
+            <button class="submit-btn" onclick="deleteUser(${userid}, this)"><span>Delete</span><span class="btn-loader"></span></button>
         </div>
     `)
 }

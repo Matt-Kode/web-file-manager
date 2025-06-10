@@ -31,7 +31,7 @@ class UserController extends Controller
             }
         }
 
-        if ($name = 'deleted-user') {
+        if ($name === 'deleted-user') {
             return response()->json(['type' => 'error', 'content' => 'Invalid username']);
         }
 
@@ -81,7 +81,7 @@ class UserController extends Controller
            return response()->json(['type' => 'error', 'content' => 'You cannot make admin users']);
         }
 
-        if ($name = 'deleted-user') {
+        if ($name === 'deleted-user') {
             return response()->json(['type' => 'error', 'content' => 'Invalid username']);
         }
 

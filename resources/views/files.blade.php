@@ -14,7 +14,7 @@
     <input type="file" class="file-input" multiple style="display: none;">
     <input type="file" class="folder-input" webkitdirectory multiple style="display: none;">
     <div class="checked-options"><button onclick="initDownload('', this)"><span>Download</span><span class="btn-loader"></span></button><button onclick="openDeleteModal()"><span>Delete</span></button></div>
-    <div class="uploads-container"><h1>Uploading</h1><p></p><div class="progress-bar-container"><div class="progress-bar"></div></div></div>
+    <div class="uploads-container"><h1>Uploading</h1><p></p><div class="progress-bar-container"><div class="progress-bar"></div></div><button class="cancel-btn" onclick="upload_cancel = true">Cancel</button></div>
     <div class="context-menu" data-filepath="">
         <button class="reg-btn" onclick="openRenameModal(this.parentElement.getAttribute('data-filepath'), this.parentElement.getAttribute('data-filepath').split('/').splice(-1)[0])">Rename</button>
         <button class="reg-btn" onclick="initDownload(this.parentElement.getAttribute('data-filepath'))">Download</button>

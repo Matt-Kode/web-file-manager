@@ -56,7 +56,7 @@ function openAddGroupModal() {
             <input type="text" name="discord_role_id" placeholder="Role id (optional)">
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit" onclick="addGroup(document.querySelector('input[name=name]').value, document.querySelector('input[name=discord_role_id]').value)">Add</button>
+                <button class="submit-btn" type="submit" onclick="addGroup(document.querySelector('input[name=name]').value, document.querySelector('input[name=discord_role_id]').value,this)"><span>Add</span><span class="btn-loader"></span></button>
             </div>
     `);
 }
@@ -96,11 +96,11 @@ function openAddRuleModal(groupelement, groupid) {
             </div>
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit">Add</button>
+                <button class="submit-btn" type="submit">Add<span class="btn-loader"></span></button>
             </div>
     `);
 
-    document.querySelector('.submit-btn').onclick = () => {
+    document.querySelector('.submit-btn').onclick = (e) => {
         addRule(groupelement,
         groupid,
         document.querySelector('input[name=filepath]').value,
@@ -111,7 +111,8 @@ function openAddRuleModal(groupelement, groupid) {
             Number(document.getElementById('rename').checked),
             Number(document.getElementById('download').checked),
             Number(document.getElementById('upload').checked),
-            Number(document.getElementById('delete').checked));
+            Number(document.getElementById('delete').checked),
+            e.target);
     }
 }
 
@@ -122,7 +123,7 @@ function openEditGroupModal(id, name, discord_role_id) {
             <input type="text" name="discord_role_id" placeholder="Discord Role id (optional)" value="${discord_role_id}">
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit" onclick="editGroup(${id}, document.querySelector('input[name=name]').value, document.querySelector('input[name=discord_role_id]').value)">Update</button>
+                <button class="submit-btn" type="submit" onclick="editGroup(${id}, document.querySelector('input[name=name]').value, document.querySelector('input[name=discord_role_id]').value, this)"><span>Save</span><span class="btn-loader"></span></button>
             </div>
     `);
 }
@@ -138,9 +139,9 @@ async function loadRules(groupelement, groupid) {
     for (let rule of rules) {
         rulescontainer.insertAdjacentHTML('beforeend',  `
         <div class="rule">
-            <span class="info">
+            <span class="info"  onclick="openRuleInfoModal('${rule.filepath}', ${rule.priority}, ${rule.view}, ${rule.edit}, ${rule.create}, ${rule.rename}, ${rule.download}, ${rule.upload}, ${rule.delete})">
                 <span class="priority">${rule.priority}</span>
-                <span class="file-path" onclick="openRuleInfoModal('${rule.filepath}', ${rule.priority}, ${rule.view}, ${rule.edit}, ${rule.create}, ${rule.rename}, ${rule.download}, ${rule.upload}, ${rule.delete})">${rule.filepath}</span>
+                <span class="file-path">${rule.filepath}</span>
             </span>
             <span class="actions">
                 <button onclick="openRuleEditModal(${rule.id}, this.parentElement.parentElement.parentElement.parentElement, ${rule.group_id}, '${rule.filepath}', ${rule.priority}, ${rule.view}, ${rule.edit}, ${rule.create}, ${rule.rename}, ${rule.download}, ${rule.upload}, ${rule.delete})">Edit</button>
@@ -192,11 +193,11 @@ function openRuleEditModal(ruleid, groupelement, groupid, filepath, priority, vi
             </div>
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                <button class="submit-btn" type="submit">Save</button>
+                <button class="submit-btn" type="submit">Save<span class="btn-loader"></span></button>
             </div>
     `);
 
-    document.querySelector('.submit-btn').onclick = () => {
+    document.querySelector('.submit-btn').onclick = (e) => {
         editRule(ruleid, groupelement, groupid,
             document.querySelector('input[name=filepath]').value,
             document.querySelector('input[name=priority]').value,
@@ -206,7 +207,8 @@ function openRuleEditModal(ruleid, groupelement, groupid, filepath, priority, vi
             Number(document.getElementById('rename').checked),
             Number(document.getElementById('download').checked),
             Number(document.getElementById('upload').checked),
-            Number(document.getElementById('delete').checked));
+            Number(document.getElementById('delete').checked),
+            e.target);
     }
 }
 
@@ -217,7 +219,7 @@ function openDeleteGroupModal(groupid) {
         <p>Are you sure you want to delete this group?</p>
         <div class="buttons">
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            <button class="submit-btn" onclick="deleteGroup(${groupid})">Delete</button>
+            <button class="submit-btn" onclick="deleteGroup(${groupid}, this)"><span>Delete</span><span class="btn-loader"></span></button>
         </div>
     `)
 }
@@ -228,11 +230,11 @@ function openDeleteRuleModal(ruleid, groupelement, groupid) {
         <p>Are you sure you want to delete this rule?</p>
         <div class="buttons">
             <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            <button class="submit-btn">Delete</button>
+            <button class="submit-btn">Delete<span class="btn-loader"></span></button>
         </div>
     `)
 
-    document.querySelector('.submit-btn').onclick = () => {
-        deleteRule(ruleid, groupelement, groupid);
+    document.querySelector('.submit-btn').onclick = (e) => {
+        deleteRule(ruleid, groupelement, groupid, e.target);
     }
 }

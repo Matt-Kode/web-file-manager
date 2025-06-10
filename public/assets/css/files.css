@@ -202,7 +202,7 @@ table tbody tr .checkbox input:checked {
 .uploads-container {
     display: none;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     position: fixed;
     right: 20px;
     bottom: 25px;
@@ -266,3 +266,17 @@ table tbody tr .checkbox input:checked {
     background-color: #2243f8;
 }
 
+.uploads-container .cancel-btn {
+    padding: 5px 20px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    color: #fff;
+    width: fit-content;
+    background-color: transparent;
+    margin-left: auto;
+}
+
+.uploads-container .cancel-btn:hover {
+    background-color: #181818;
+}

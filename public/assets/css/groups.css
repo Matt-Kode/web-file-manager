@@ -182,3 +182,11 @@
 .no-rules {
     padding: 20px 25px;
 }
+
+.rule .info {
+    cursor: pointer;
+}
+
+.rule .info:hover {
+    text-decoration: underline;
+}

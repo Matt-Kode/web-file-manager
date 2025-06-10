@@ -18,9 +18,5 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'is_admin' => 1
         ]);
-
-        DB::table('groups')->insert([
-            'name' => 'mod-group'
-        ]);
     }
 }

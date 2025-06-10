@@ -25,7 +25,8 @@ async function saveFile(button, filepathparam) {
     handleStatus(await response.json());
 }
 
-async function create(filepathparam, filetypeparam, filenameparam) {
+async function create(filepathparam, filetypeparam, filenameparam, button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let response = await fetch('/remote/create', {
         method: "POST",
         headers: {
@@ -34,14 +35,17 @@ async function create(filepathparam, filetypeparam, filenameparam) {
         },
         body: JSON.stringify({filepath: filepathparam, filename: filenameparam, filetype: filetypeparam})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadFiles();
     }
 }
 
-async function deleteFile(filepathparam, handlestatus = true) {
-    closeModal();
+async function deleteFile(filepathparam, button, handlestatus = true) {
+    if (button !== null) {
+        button.querySelector('.btn-loader').style.display = 'inline-block';
+    }
     let response = await fetch('/remote/delete', {
         method: "POST",
         headers: {
@@ -50,16 +54,20 @@ async function deleteFile(filepathparam, handlestatus = true) {
         },
         body: JSON.stringify({filepath: filepathparam})
     });
+    if (button !== null) {
+        button.querySelector('.btn-loader').style.display = 'none';
+    }
     if (!handlestatus) {
-        await loadFiles();
         return await response.json();
     }
-    handleStatus(await response.json(), true);
-    await loadFiles();
+    if (handleStatus(await response.json(), true)) {
+        closeModal();
+        await loadFiles();
+    }
 }
 
-async function renameFile(filepathparam, newfilenameparam) {
-    closeModal();
+async function renameFile(filepathparam, newfilenameparam, button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let response = await fetch('/remote/rename', {
         method: "POST",
         headers: {
@@ -68,6 +76,7 @@ async function renameFile(filepathparam, newfilenameparam) {
         },
         body: JSON.stringify({filepath: filepathparam, newfilename: newfilenameparam})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadFiles();

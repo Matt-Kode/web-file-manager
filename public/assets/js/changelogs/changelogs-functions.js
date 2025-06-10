@@ -90,6 +90,7 @@ function loadConflict(content, filename, clid) {
     clearHighlights();
 
     editor.setValue(content);
+    editor.session.setMode("ace/mode/" + fileExtension(filename));
     editor.setReadOnly(false);
 
     editoroptions.innerHTML = `

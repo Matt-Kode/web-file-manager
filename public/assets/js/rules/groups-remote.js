@@ -21,7 +21,8 @@ async function fetchRules(groupid) {
     return await response.json();
 }
 
-async function addGroup(nameparam, discord_role_id) {
+async function addGroup(nameparam, discord_role_id, button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let roleid = discord_role_id || null;
     let response = await fetch('/groups/create', {
         method: 'POST',
@@ -31,13 +32,15 @@ async function addGroup(nameparam, discord_role_id) {
         },
         body: JSON.stringify({name: nameparam, discord_role_id: roleid})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadGroups();
     }
 }
 
-async function editGroup(idparam, nameparam, discord_role_id) {
+async function editGroup(idparam, nameparam, discord_role_id ,button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let roleid = discord_role_id || null;
     let response = await fetch('/groups/update', {
         method: 'POST',
@@ -47,13 +50,16 @@ async function editGroup(idparam, nameparam, discord_role_id) {
         },
         body: JSON.stringify({id: idparam, name: nameparam, discord_role_id: roleid})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadGroups();
     }
 }
 
-async function addRule(groupelement, groupid, filepathparam, priorityparam, viewparam, editparam, createparam, renameparam, downloadparam, uploadparam, deleteparam) {
+async function addRule(groupelement, groupid, filepathparam, priorityparam, viewparam, editparam, createparam, renameparam, downloadparam, uploadparam, deleteparam, button) {
+    console.log(button);
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let response = await fetch('/groups/rules/create', {
         method: 'POST',
         headers: {
@@ -74,13 +80,15 @@ async function addRule(groupelement, groupid, filepathparam, priorityparam, view
                 delete: deleteparam
             }})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadRules(groupelement, groupid);
     }
 }
 
-async function editRule(ruleid, groupelement, groupid, filepathparam, priorityparam, viewparam, editparam, createparam, renameparam, downloadparam, uploadparam, deleteparam) {
+async function editRule(ruleid, groupelement, groupid, filepathparam, priorityparam, viewparam, editparam, createparam, renameparam, downloadparam, uploadparam, deleteparam, button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let response = await fetch('/groups/rules/update', {
         method: 'POST',
         headers: {
@@ -101,13 +109,15 @@ async function editRule(ruleid, groupelement, groupid, filepathparam, prioritypa
                 delete: deleteparam
             }})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadRules(groupelement, groupid);
     }
 }
 
-async function deleteGroup(groupid) {
+async function deleteGroup(groupid, button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let response = await fetch('/groups/delete', {
         method: 'POST',
         headers: {
@@ -116,13 +126,15 @@ async function deleteGroup(groupid) {
         },
         body: JSON.stringify({group_id: groupid})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadGroups();
     }
 }
 
-async function deleteRule(ruleid, groupelement, groupid) {
+async function deleteRule(ruleid, groupelement, groupid, button) {
+    button.querySelector('.btn-loader').style.display = 'inline-block';
     let response = await fetch('/groups/rules/delete', {
         method: 'POST',
         headers: {
@@ -131,6 +143,7 @@ async function deleteRule(ruleid, groupelement, groupid) {
         },
         body: JSON.stringify({rule_id: ruleid})
     });
+    button.querySelector('.btn-loader').style.display = 'none';
     if (handleStatus(await response.json())) {
         closeModal();
         await loadRules(groupelement, groupid);

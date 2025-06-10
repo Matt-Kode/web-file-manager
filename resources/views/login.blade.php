@@ -23,6 +23,20 @@
         <button type="submit" class="submit-btn"><span>Login</span><span class="btn-loader"></span></button>
     </form>
 </div>
+<script>
+    function disableButtons(bool) {
+        let buttons = document.querySelectorAll('button');
+        if (!bool) {
+            for (let btn of buttons) {
+                btn.disabled = false;
+            }
+        } else {
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+    }
+</script>
 <script src="/assets/js/login.js"></script>
 </body>
 </html>
