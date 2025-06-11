@@ -53,7 +53,7 @@ async function openEditUserModal(username, is_admin, userid, group_id, button) {
             </div>`}
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                ${!rootuser || userid === 1 ? `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, ${is_admin}, ${userid}, this)"><span>Save</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, ${userid}, document.querySelector('input[name=group-name]').value, this)"><span>Save</span><span class="btn-loader"></span></button>`}
+                ${!rootuser || userid === 1 ? `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, ${is_admin}, ${userid}, null, this)"><span>Save</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, ${userid}, document.querySelector('input[name=group-name]').value, this)"><span>Save</span><span class="btn-loader"></span></button>`}
             </div>
     `);
 }
