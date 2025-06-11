@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 Class RemoteFs {
 
-    const REMOTE_URL = "http://site2.localhost";
 
     public static function put(String $filepath, $content) {
         return self::httpRequestAction('edit', '/put.php',
@@ -65,7 +64,7 @@ Class RemoteFs {
     private static function httpRequestAction(String $permname, String $route, array $headers, array $params) {
         $headers += ['Authorization' => 'Bearer ' . signTokenWithId(Auth::user()->id)];
         $client = new Client([
-            'base_uri' => self::REMOTE_URL
+            'base_uri' => env('REMOTE_URL')
         ]);
         try {
             $response = $client->request('POST', $route,  [
