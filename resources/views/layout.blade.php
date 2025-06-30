@@ -23,6 +23,10 @@
     const body = document.querySelector("body");
     let notificationcount = 0;
 
+    window.addEventListener('submit', (event) => {
+    event.preventDefault();
+})
+
     function openModal(content) {
         modal.innerHTML = content;
         body.style.overflow = 'hidden'

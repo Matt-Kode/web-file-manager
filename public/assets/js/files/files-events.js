@@ -36,10 +36,6 @@ window.addEventListener('click', (event) => {
     }
 })
 
-window.addEventListener('submit', (event) => {
-    event.preventDefault();
-})
-
 window.addEventListener('change', async (event) => {
     upload_cancel = false;
     if (event.target.matches('.file-input')) {
