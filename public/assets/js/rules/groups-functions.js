@@ -45,12 +45,12 @@ function openRuleInfoModal(filepath, priority, view, edit, create, rename, downl
     <div class="buttons">
         <button class="cancel-btn" onclick="closeModal()">Close</button>
     </div>
-
     `);
 }
 
 function openAddGroupModal() {
     openModal(`
+        <form>
             <h1>New Group</h1>
             <input type="text" name="name" placeholder="Group name">
             <input type="text" name="discord_role_id" placeholder="Role id (optional)">
@@ -58,11 +58,13 @@ function openAddGroupModal() {
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 <button class="submit-btn" type="submit" onclick="addGroup(document.querySelector('input[name=name]').value, document.querySelector('input[name=discord_role_id]').value,this)"><span>Add</span><span class="btn-loader"></span></button>
             </div>
+        </form>
     `);
 }
 
 function openAddRuleModal(groupelement, groupid) {
     openModal(`
+        <form>
             <h1>New Rule</h1>
             <input type="text" name="filepath" placeholder="Filepath">
             <input type="text" name="priority" placeholder="Priority">
@@ -98,6 +100,7 @@ function openAddRuleModal(groupelement, groupid) {
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 <button class="submit-btn" type="submit">Add<span class="btn-loader"></span></button>
             </div>
+        </form>
     `);
 
     document.querySelector('.submit-btn').onclick = (e) => {
@@ -118,6 +121,7 @@ function openAddRuleModal(groupelement, groupid) {
 
 function openEditGroupModal(id, name, discord_role_id) {
     openModal(`
+        <form>
             <h1>Edit Group</h1>
             <input type="text" name="name" placeholder="Group name" value="${name}">
             <input type="text" name="discord_role_id" placeholder="Discord Role id (optional)" value="${discord_role_id}">
@@ -125,6 +129,7 @@ function openEditGroupModal(id, name, discord_role_id) {
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 <button class="submit-btn" type="submit" onclick="editGroup(${id}, document.querySelector('input[name=name]').value, document.querySelector('input[name=discord_role_id]').value, this)"><span>Save</span><span class="btn-loader"></span></button>
             </div>
+        </form>
     `);
 }
 
@@ -160,6 +165,7 @@ async function toggleRules(button, groupid) {
 
 function openRuleEditModal(ruleid, groupelement, groupid, filepath, priority, view, edit, create, rename, download, upload, del) {
     openModal(`
+        <form>
             <h1>Edit Rule</h1>
             <input type="text" name="filepath" value="${filepath}" placeholder="Filepath">
             <input type="text" name="priority" value="${priority}" placeholder="Priority">
@@ -195,6 +201,7 @@ function openRuleEditModal(ruleid, groupelement, groupid, filepath, priority, vi
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 <button class="submit-btn" type="submit">Save<span class="btn-loader"></span></button>
             </div>
+        </form>
     `);
 
     document.querySelector('.submit-btn').onclick = (e) => {

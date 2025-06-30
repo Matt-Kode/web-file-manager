@@ -20,6 +20,7 @@ async function loadUsers() {
 
 function openAddUserModal() {
     openModal(`
+        <form>
             <h1>New user</h1>
             <input type="text" name="username" placeholder="Username">
             <input type="password" name="password" placeholder="Password">
@@ -33,6 +34,7 @@ function openAddUserModal() {
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 ${!rootuser ? `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, 0, this)"><span>Add</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, document.querySelector('input[name=group-name]').value, this)"><span>Add</span><span class="btn-loader"></span></button>`}
             </div>
+        </form>
     `);
 }
 
@@ -42,6 +44,7 @@ async function openEditUserModal(username, is_admin, userid, group_id, button) {
     let group_name = await fetchGroupName(group_id);
     loader.style.display = 'none';
     openModal(`
+        <form>
             <h1>Edit user</h1>
             <input type="text" name="username" value="${username}" placeholder="Username">
             <input type="password" name="password" placeholder="Password">
@@ -55,6 +58,7 @@ async function openEditUserModal(username, is_admin, userid, group_id, button) {
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
                 ${!rootuser || userid === 1 ? `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, ${is_admin}, ${userid}, null, this)"><span>Save</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="editUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, ${userid}, document.querySelector('input[name=group-name]').value, this)"><span>Save</span><span class="btn-loader"></span></button>`}
             </div>
+        </form>
     `);
 }
 
