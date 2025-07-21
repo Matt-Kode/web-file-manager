@@ -251,7 +251,6 @@ async function deleteCheckedFiles(button) {
         let responsejson = await deleteFile(cb.parentElement.parentElement.getAttribute('data-filepath'), null, false);
         if (handleStatus(responsejson, true)) {
             successfuldeletions++;
-            console.log('wqokinh');
         }
     }
     button.querySelector('.btn-loader').style.display = 'none';
