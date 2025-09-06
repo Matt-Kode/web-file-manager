@@ -32,7 +32,7 @@ function openAddUserModal() {
             </div>`}
             <div class="buttons">
                 <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-                ${!rootuser ? `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, 0, this)"><span>Add</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, document.querySelector('input[name=group-name]').value, this)"><span>Add</span><span class="btn-loader"></span></button>`}
+                ${!rootuser ? `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, 0, document.querySelector('input[name=group-name]').value, this)"><span>Add</span><span class="btn-loader"></span></button>` : `<button class="submit-btn" type="submit" onclick="addUser(document.querySelector('input[name=username]').value, document.querySelector('input[name=password]').value, document.getElementById('admin').checked, document.querySelector('input[name=group-name]').value, this)"><span>Add</span><span class="btn-loader"></span></button>`}
             </div>
         </form>
     `);
